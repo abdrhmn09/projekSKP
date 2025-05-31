@@ -1,6 +1,4 @@
-
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -65,6 +63,10 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
+        // TES DIAGNOSTIK: Periksa user dan role SEGERA setelah login berhasil
+        // dd('LoginController - authenticated: User Role', $user->role, 'User Object', $user); // DIHAPUS
+        // HAPUS dd() INI SETELAH SELESAI TES
+
         switch ($user->role) {
             case 'admin':
                 return redirect()->route('admin.dashboard');

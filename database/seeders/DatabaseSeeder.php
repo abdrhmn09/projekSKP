@@ -20,28 +20,11 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }
-}
-<?php
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
-namespace Database\Seeders;
-
-use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Jabatan;
-use App\Models\Pegawai;
-use App\Models\PerilakuKerja;
-use App\Models\PeriodePenilaian;
-use Illuminate\Support\Facades\Hash;
-
-class DatabaseSeeder extends Seeder
-{
-    public function run(): void
-    {
         // Create jabatan
         $jabatanKepala = Jabatan::create([
             'nama_jabatan' => 'Kepala Sekolah',
@@ -184,11 +167,11 @@ class DatabaseSeeder extends Seeder
 
         // Create perilaku kerja indicators
         $perilakuKerja = [
-            ['nama_perilaku' => 'Integritas', 'bobot' => 20],
-            ['nama_perilaku' => 'Komitmen', 'bobot' => 20],
-            ['nama_perilaku' => 'Disiplin', 'bobot' => 20],
-            ['nama_perilaku' => 'Kerjasama', 'bobot' => 20],
-            ['nama_perilaku' => 'Kepemimpinan', 'bobot' => 20],
+            ['nama_perilaku' => 'Integritas', 'deskripsi' => '', 'bobot_nilai' => 20],
+            ['nama_perilaku' => 'Komitmen', 'deskripsi' => '', 'bobot_nilai' => 20],
+            ['nama_perilaku' => 'Disiplin', 'deskripsi' => '', 'bobot_nilai' => 20],
+            ['nama_perilaku' => 'Kerjasama', 'deskripsi' => '', 'bobot_nilai' => 20],
+            ['nama_perilaku' => 'Kepemimpinan', 'deskripsi' => '', 'bobot_nilai' => 20],
         ];
 
         foreach ($perilakuKerja as $perilaku) {
