@@ -46,6 +46,10 @@ Route::middleware('auth')->group(function () {
         // Reports
         Route::get('/laporan', [AdminController::class, 'laporan'])->name('laporan');
         Route::get('/laporan/export', [ExportController::class, 'exportLaporan'])->name('laporan.export');
+
+        // Additional admin routes
+        Route::resource('jabatan', AdminController::class . '@jabatan');
+        Route::resource('pegawai', AdminController::class . '@pegawai');
     });
 
     // Kepala Sekolah Routes

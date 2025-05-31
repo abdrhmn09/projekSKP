@@ -1,20 +1,22 @@
-
 <?php
 
 namespace App\Http\Controllers;
 
-use App\Models\PenilaianSkp;
-use App\Models\SasaranKerja;
-use App\Models\Pegawai;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
+use App\Models\PenilaianSkp;
+use App\Models\Pegawai;
+use App\Models\PeriodePenilaian;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class ExportController extends Controller
 {
     public function exportLaporan(Request $request)
     {
-        $periode_id = $request->get('periode_id');
-        $status = $request->get('status');
+        $format = $request->input('format', 'excel');
+        $periode_id = $request->input('periode_id');
+        $pegawai_id = $request->input('pegawai_id');
 
         $query = PenilaianSkp::with(['pegawai.user', 'periode']);
 
@@ -22,100 +24,54 @@ class ExportController extends Controller
             $query->where('periode_id', $periode_id);
         }
 
-        if ($status) {
-            $query->where('status', $status);
+        if ($pegawai_id) {
+            $query->where('pegawai_id', $pegawai_id);
         }
 
         $data = $query->get();
 
-        $csv = "Nama,NIP,Periode,Nilai SKP,Kategori,Status,Tanggal Penilaian\n";
-
-        foreach ($data as $item) {
-            $csv .= sprintf(
-                "%s,%s,%s,%.2f,%s,%s,%s\n",
-                $item->pegawai->user->name,
-                $item->pegawai->user->nip,
-                $item->periode->nama_periode,
-                $item->nilai_akhir,
-                $item->kategori_nilai,
-                $item->status,
-                $item->created_at->format('d/m/Y')
-            );
+        if ($format === 'pdf') {
+            return $this->exportToPdf($data);
         }
 
-        $filename = 'laporan_skp_' . date('Y-m-d') . '.csv';
-
-        return Response::make($csv, 200, [
-            'Content-Type' => 'application/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+        return $this->exportToExcel($data);
     }
 
-    public function exportSasaran(Request $request)
+    private function exportToExcel($data)
     {
-        $periode_id = $request->get('periode_id');
-        $status = $request->get('status');
+        $filename = 'laporan_skp_' . Carbon::now()->format('Y_m_d_H_i_s') . '.xlsx';
 
-        $query = SasaranKerja::with(['pegawai.user', 'periode']);
+        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            private $data;
 
-        if ($periode_id) {
-            $query->where('periode_id', $periode_id);
-        }
+            public function __construct($data) {
+                $this->data = $data;
+            }
 
-        if ($status) {
-            $query->where('status', $status);
-        }
+            public function collection() {
+                return $this->data->map(function ($item) {
+                    return [
+                        'NIP' => $item->pegawai->user->nip,
+                        'Nama' => $item->pegawai->user->name,
+                        'Periode' => $item->periode->nama_periode,
+                        'Nilai SKP' => $item->nilai_skp,
+                        'Nilai Perilaku' => $item->nilai_perilaku,
+                        'Nilai Akhir' => $item->nilai_akhir,
+                        'Kategori' => $item->kategori,
+                        'Status' => $item->status,
+                    ];
+                });
+            }
 
-        $data = $query->get();
-
-        $csv = "Nama,NIP,Periode,Uraian Sasaran,Target Kuantitas,Target Kualitas,Status\n";
-
-        foreach ($data as $item) {
-            $csv .= sprintf(
-                "%s,%s,%s,%s,%d %s,%.2f%%,%s\n",
-                $item->pegawai->user->name,
-                $item->pegawai->user->nip,
-                $item->periode->nama_periode,
-                $item->uraian_sasaran,
-                $item->target_kuantitas,
-                $item->satuan_kuantitas,
-                $item->target_kualitas,
-                $item->status
-            );
-        }
-
-        $filename = 'sasaran_kerja_' . date('Y-m-d') . '.csv';
-
-        return Response::make($csv, 200, [
-            'Content-Type' => 'application/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+            public function headings(): array {
+                return ['NIP', 'Nama', 'Periode', 'Nilai SKP', 'Nilai Perilaku', 'Nilai Akhir', 'Kategori', 'Status'];
+            }
+        }, $filename);
     }
 
-    public function exportPegawai()
+    private function exportToPdf($data)
     {
-        $data = Pegawai::with(['user', 'jabatan'])->get();
-
-        $csv = "Nama,NIP,Email,Jabatan,Status Kepegawaian,Golongan,Tanggal Masuk\n";
-
-        foreach ($data as $item) {
-            $csv .= sprintf(
-                "%s,%s,%s,%s,%s,%s,%s\n",
-                $item->user->name,
-                $item->user->nip,
-                $item->user->email,
-                $item->jabatan->nama_jabatan,
-                $item->status_kepegawaian,
-                $item->golongan ?? '-',
-                $item->tanggal_masuk_kerja
-            );
-        }
-
-        $filename = 'data_pegawai_' . date('Y-m-d') . '.csv';
-
-        return Response::make($csv, 200, [
-            'Content-Type' => 'application/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+        $pdf = Pdf::loadView('admin.laporan-pdf', compact('data'));
+        return $pdf->download('laporan_skp_' . Carbon::now()->format('Y_m_d_H_i_s') . '.pdf');
     }
 }
