@@ -1,15 +1,15 @@
-
 <?php
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Pegawai;
 use App\Models\Jabatan;
 use App\Models\PeriodePenilaian;
 use App\Models\PenilaianSkp;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -50,39 +50,47 @@ class AdminController extends Controller
             'phone' => 'nullable|string',
             'role' => 'required|in:guru,staff',
             'jabatan_id' => 'required|exists:jabatan,id',
-            'nama_lengkap' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat' => 'required|string',
             'pendidikan_terakhir' => 'required|string',
             'tanggal_masuk_kerja' => 'required|date',
             'status_kepegawaian' => 'required|in:PNS,PPPK,Honorer',
-            'golongan' => 'nullable|string',
+            'golongan' => 'nullable|string'
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'nip' => $request->nip,
-            'phone' => $request->phone,
-            'role' => $request->role,
-            'password' => Hash::make('password123'),
-        ]);
+        DB::beginTransaction();
+        try {
+            // Create user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'nip' => $request->nip,
+                'phone' => $request->phone,
+                'role' => $request->role,
+                'password' => Hash::make('password123'), // Default password
+            ]);
 
-        Pegawai::create([
-            'user_id' => $user->id,
-            'jabatan_id' => $request->jabatan_id,
-            'nama_lengkap' => $request->nama_lengkap,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
-            'pendidikan_terakhir' => $request->pendidikan_terakhir,
-            'tanggal_masuk_kerja' => $request->tanggal_masuk_kerja,
-            'status_kepegawaian' => $request->status_kepegawaian,
-            'golongan' => $request->golongan,
-        ]);
+            // Create pegawai
+            Pegawai::create([
+                'user_id' => $user->id,
+                'jabatan_id' => $request->jabatan_id,
+                'nama_lengkap' => $request->nama_lengkap,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+                'tanggal_masuk_kerja' => $request->tanggal_masuk_kerja,
+                'status_kepegawaian' => $request->status_kepegawaian,
+                'golongan' => $request->golongan,
+            ]);
 
-        return redirect()->route('admin.pegawai')->with('success', 'Data pegawai berhasil ditambahkan');
+            DB::commit();
+            return redirect()->route('admin.pegawai')->with('success', 'Data pegawai berhasil ditambahkan');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->with('error', 'Gagal menambahkan data pegawai');
+        }
     }
 
     // Periode Management
@@ -104,19 +112,18 @@ class AdminController extends Controller
             'jenis_periode' => 'required|in:semester,tahunan',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
-            'deskripsi' => 'nullable|string',
+            'deskripsi' => 'nullable|string'
         ]);
 
         PeriodePenilaian::create($request->all());
-
         return redirect()->route('admin.periode')->with('success', 'Periode penilaian berhasil ditambahkan');
     }
 
     public function periodeActivate($id)
     {
-        // Deactivate all periods
+        // Deactivate all periods first
         PeriodePenilaian::query()->update(['is_active' => false]);
-        
+
         // Activate selected period
         PeriodePenilaian::findOrFail($id)->update(['is_active' => true]);
 
@@ -154,7 +161,7 @@ class AdminController extends Controller
         $totalPegawai = Pegawai::count();
         $totalPenilaian = PenilaianSkp::count();
         $periodeAktif = PeriodePenilaian::where('is_active', true)->first();
-        
+
         return view('admin.laporan', compact('totalPegawai', 'totalPenilaian', 'periodeAktif'));
     }
 }

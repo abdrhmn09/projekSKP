@@ -5,6 +5,11 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Jabatan;
+use App\Models\Pegawai;
+use App\Models\PerilakuKerja;
+use App\Models\PeriodePenilaian;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,38 +35,26 @@ use App\Models\User;
 use App\Models\Jabatan;
 use App\Models\Pegawai;
 use App\Models\PerilakuKerja;
+use App\Models\PeriodePenilaian;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create Admin User
-        $admin = User::create([
-            'name' => 'Administrator',
-            'email' => 'admin@sma.com',
-            'nip' => 'ADM001',
-            'phone' => '081234567890',
-            'role' => 'admin',
-            'password' => Hash::make('admin123'),
-        ]);
-
-        // Create Kepala Sekolah
-        $kepala = User::create([
-            'name' => 'Kepala Sekolah',
-            'email' => 'kepala@sma.com',
-            'nip' => 'KS001',
-            'phone' => '081234567891',
-            'role' => 'kepala_sekolah',
-            'password' => Hash::make('kepala123'),
-        ]);
-
-        // Create Jabatan
+        // Create jabatan
         $jabatanKepala = Jabatan::create([
             'nama_jabatan' => 'Kepala Sekolah',
             'kode_jabatan' => 'KS',
             'deskripsi' => 'Pimpinan sekolah',
             'tunjangan_jabatan' => 2000000,
+        ]);
+
+        $jabatanWakil = Jabatan::create([
+            'nama_jabatan' => 'Wakil Kepala Sekolah',
+            'kode_jabatan' => 'WK',
+            'deskripsi' => 'Wakil kepala sekolah',
+            'tunjangan_jabatan' => 1500000,
         ]);
 
         $jabatanGuru = Jabatan::create([
@@ -72,55 +65,96 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $jabatanStaff = Jabatan::create([
-            'nama_jabatan' => 'Staff Administrasi',
+            'nama_jabatan' => 'Staff Tata Usaha',
             'kode_jabatan' => 'SA',
-            'deskripsi' => 'Tenaga kependidikan',
+            'deskripsi' => 'Tenaga administrasi',
             'tunjangan_jabatan' => 300000,
         ]);
 
-        // Create Pegawai for Kepala Sekolah
+        // Create admin user
+        $admin = User::create([
+            'name' => 'Administrator',
+            'email' => 'admin@sma.com',
+            'nip' => '123456789',
+            'phone' => '081234567890',
+            'role' => 'admin',
+            'password' => Hash::make('admin123'),
+        ]);
+
+        // Create kepala sekolah
+        $kepala = User::create([
+            'name' => 'Dr. Ahmad Susanto, M.Pd',
+            'email' => 'kepala@sma.com',
+            'nip' => '196501011990031001',
+            'phone' => '081234567891',
+            'role' => 'kepala_sekolah',
+            'password' => Hash::make('kepala123'),
+        ]);
+
         Pegawai::create([
             'user_id' => $kepala->id,
             'jabatan_id' => $jabatanKepala->id,
-            'nama_lengkap' => 'Dr. Kepala Sekolah, S.Pd., M.Pd.',
-            'tanggal_lahir' => '1975-05-15',
+            'nama_lengkap' => 'Dr. Ahmad Susanto, M.Pd',
+            'tanggal_lahir' => '1965-01-01',
             'jenis_kelamin' => 'L',
-            'alamat' => 'Jl. Pendidikan No. 1',
-            'pendidikan_terakhir' => 'S2 Manajemen Pendidikan',
-            'tanggal_masuk_kerja' => '2010-01-01',
+            'alamat' => 'Jl. Merdeka No. 123, Jakarta',
+            'pendidikan_terakhir' => 'S2 Pendidikan',
+            'tanggal_masuk_kerja' => '1990-03-01',
             'status_kepegawaian' => 'PNS',
-            'golongan' => 'IV/c',
+            'golongan' => 'IV/a'
         ]);
 
-        // Create Sample Guru
-        $guru = User::create([
-            'name' => 'Guru Matematika',
-            'email' => 'guru@sma.com',
-            'nip' => 'GR001',
+        // Create sample guru
+        $guru1 = User::create([
+            'name' => 'Siti Nurhaliza, S.Pd',
+            'email' => 'guru1@sma.com',
+            'nip' => '198005052005012001',
             'phone' => '081234567892',
             'role' => 'guru',
             'password' => Hash::make('guru123'),
         ]);
 
         Pegawai::create([
-            'user_id' => $guru->id,
+            'user_id' => $guru1->id,
             'jabatan_id' => $jabatanGuru->id,
-            'nama_lengkap' => 'Guru Matematika, S.Pd.',
-            'tanggal_lahir' => '1985-08-20',
+            'nama_lengkap' => 'Siti Nurhaliza, S.Pd',
+            'tanggal_lahir' => '1980-05-05',
             'jenis_kelamin' => 'P',
-            'alamat' => 'Jl. Pendidikan No. 5',
-            'pendidikan_terakhir' => 'S1 Pendidikan Matematika',
-            'tanggal_masuk_kerja' => '2015-07-01',
+            'alamat' => 'Jl. Pendidikan No. 45, Jakarta',
+            'pendidikan_terakhir' => 'S1 Matematika',
+            'tanggal_masuk_kerja' => '2005-01-02',
             'status_kepegawaian' => 'PNS',
-            'golongan' => 'III/b',
+            'golongan' => 'III/c'
         ]);
 
-        // Create Sample Staff
-        $staff = User::create([
-            'name' => 'Staff Administrasi',
-            'email' => 'staff@sma.com',
-            'nip' => 'SA001',
+        $guru2 = User::create([
+            'name' => 'Budi Santoso, S.Pd',
+            'email' => 'guru2@sma.com',
+            'nip' => '198203152006011002',
             'phone' => '081234567893',
+            'role' => 'guru',
+            'password' => Hash::make('guru123'),
+        ]);
+
+        Pegawai::create([
+            'user_id' => $guru2->id,
+            'jabatan_id' => $jabatanGuru->id,
+            'nama_lengkap' => 'Budi Santoso, S.Pd',
+            'tanggal_lahir' => '1982-03-15',
+            'jenis_kelamin' => 'L',
+            'alamat' => 'Jl. Cendekia No. 67, Jakarta',
+            'pendidikan_terakhir' => 'S1 Bahasa Indonesia',
+            'tanggal_masuk_kerja' => '2006-01-01',
+            'status_kepegawaian' => 'PNS',
+            'golongan' => 'III/b'
+        ]);
+
+        // Create staff
+        $staff = User::create([
+            'name' => 'Dewi Lestari, S.Kom',
+            'email' => 'staff@sma.com',
+            'nip' => '198507202010012003',
+            'phone' => '081234567894',
             'role' => 'staff',
             'password' => Hash::make('staff123'),
         ]);
@@ -128,45 +162,37 @@ class DatabaseSeeder extends Seeder
         Pegawai::create([
             'user_id' => $staff->id,
             'jabatan_id' => $jabatanStaff->id,
-            'nama_lengkap' => 'Staff Administrasi',
-            'tanggal_lahir' => '1990-03-10',
-            'jenis_kelamin' => 'L',
-            'alamat' => 'Jl. Administrasi No. 3',
-            'pendidikan_terakhir' => 'D3 Administrasi',
-            'tanggal_masuk_kerja' => '2018-02-15',
+            'nama_lengkap' => 'Dewi Lestari, S.Kom',
+            'tanggal_lahir' => '1985-07-20',
+            'jenis_kelamin' => 'P',
+            'alamat' => 'Jl. Teknologi No. 89, Jakarta',
+            'pendidikan_terakhir' => 'S1 Sistem Informasi',
+            'tanggal_masuk_kerja' => '2010-01-02',
             'status_kepegawaian' => 'PPPK',
-            'golongan' => 'II/c',
+            'golongan' => 'III/a'
         ]);
 
-        // Create Perilaku Kerja Standards
-        PerilakuKerja::create([
-            'nama_perilaku' => 'Integritas',
-            'deskripsi' => 'Kemampuan untuk bertindak sesuai dengan nilai, norma dan etika dalam organisasi',
-            'bobot_nilai' => 100,
+        // Create periode penilaian
+        $periode = PeriodePenilaian::create([
+            'nama_periode' => 'Semester I Tahun 2024',
+            'jenis_periode' => 'semester',
+            'tanggal_mulai' => '2024-01-01',
+            'tanggal_selesai' => '2024-06-30',
+            'is_active' => true,
+            'deskripsi' => 'Periode penilaian semester pertama tahun 2024'
         ]);
 
-        PerilakuKerja::create([
-            'nama_perilaku' => 'Kerjasama',
-            'deskripsi' => 'Kemampuan untuk bekerja sama dengan rekan kerja dan pimpinan',
-            'bobot_nilai' => 100,
-        ]);
+        // Create perilaku kerja indicators
+        $perilakuKerja = [
+            ['nama_perilaku' => 'Integritas', 'bobot' => 20],
+            ['nama_perilaku' => 'Komitmen', 'bobot' => 20],
+            ['nama_perilaku' => 'Disiplin', 'bobot' => 20],
+            ['nama_perilaku' => 'Kerjasama', 'bobot' => 20],
+            ['nama_perilaku' => 'Kepemimpinan', 'bobot' => 20],
+        ];
 
-        PerilakuKerja::create([
-            'nama_perilaku' => 'Komunikasi',
-            'deskripsi' => 'Kemampuan untuk menyampaikan informasi secara efektif',
-            'bobot_nilai' => 100,
-        ]);
-
-        PerilakuKerja::create([
-            'nama_perilaku' => 'Orientasi Pelayanan',
-            'deskripsi' => 'Kemampuan untuk memberikan pelayanan yang memuaskan kepada pengguna layanan',
-            'bobot_nilai' => 100,
-        ]);
-
-        PerilakuKerja::create([
-            'nama_perilaku' => 'Komitmen',
-            'deskripsi' => 'Kemampuan untuk dapat menyelaraskan perilaku kerja dengan kepentingan organisasi',
-            'bobot_nilai' => 100,
-        ]);
+        foreach ($perilakuKerja as $perilaku) {
+            PerilakuKerja::create($perilaku);
+        }
     }
 }

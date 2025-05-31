@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Http\Controllers;
@@ -46,10 +45,9 @@ class KepalaSekolahController extends Controller
     public function approve(Request $request, $id)
     {
         $sasaran = SasaranKerja::findOrFail($id);
-        
         $sasaran->update([
             'status' => 'approved',
-            'catatan' => $request->catatan
+            'catatan_penilaian' => $request->catatan ?? 'Disetujui'
         ]);
 
         return redirect()->route('kepala.persetujuan')->with('success', 'Sasaran kerja berhasil disetujui');
@@ -62,30 +60,31 @@ class KepalaSekolahController extends Controller
         ]);
 
         $sasaran = SasaranKerja::findOrFail($id);
-        
         $sasaran->update([
             'status' => 'rejected',
-            'catatan' => $request->catatan
+            'catatan_penilaian' => $request->catatan
         ]);
 
-        return redirect()->route('kepala.persetujuan')->with('success', 'Sasaran kerja ditolak dengan catatan');
+        return redirect()->route('kepala.persetujuan')->with('success', 'Sasaran kerja telah ditolak');
     }
 
     public function monitoring()
     {
-        $pegawai = Pegawai::with(['user', 'sasaranKerja' => function($query) {
-            $query->where('status', 'approved');
-        }])->paginate(10);
+        $periodeAktif = PeriodePenilaian::where('is_active', true)->first();
+        $sasaranData = [];
 
-        return view('kepala.monitoring', compact('pegawai'));
+        if ($periodeAktif) {
+            $sasaranData = SasaranKerja::with(['pegawai.user', 'realisasiKerja'])
+                ->where('periode_id', $periodeAktif->id)
+                ->get();
+        }
+
+        return view('kepala.monitoring', compact('sasaranData', 'periodeAktif'));
     }
 
     public function laporan()
     {
-        $periodeAktif = PeriodePenilaian::where('is_active', true)->first();
-        $penilaianSelesai = PenilaianSkp::where('status', 'approved')->count();
-        $totalSasaran = SasaranKerja::where('status', 'approved')->count();
-
-        return view('kepala.laporan', compact('periodeAktif', 'penilaianSelesai', 'totalSasaran'));
+        $data = PenilaianSkp::with(['pegawai.user', 'periode'])->paginate(10);
+        return view('kepala.laporan', compact('data'));
     }
 }
