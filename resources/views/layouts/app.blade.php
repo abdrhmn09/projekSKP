@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -42,9 +41,10 @@
                         </div>
                     </div>
                 </div>
-                
+
                 @auth
                 <div class="flex items-center space-x-4">
+                    @include('components.notification-bell')
                     <div class="text-white text-sm">
                         <span>{{ auth()->user()->name }}</span>
                         <span class="text-blue-200">({{ ucfirst(str_replace('_', ' ', auth()->user()->role)) }})</span>
