@@ -21,19 +21,21 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Redirect based on role if authenticated
-                $user = Auth::guard($guard)->user();
-                if ($user) {
-                    switch ($user->role) {
-                        case 'admin':
-                            return redirect(RouteServiceProvider::ADMIN_HOME);
-                        case 'kepala_sekolah':
-                            return redirect(RouteServiceProvider::KEPALA_HOME);
-                        case 'guru': // Fallthrough
-                        case 'staff':
-                            return redirect(RouteServiceProvider::PEGAWAI_HOME);
-                        default:
-                            return redirect(RouteServiceProvider::HOME); // Default redirect
+                // Only redirect if user is trying to access login page
+                if ($request->routeIs('login')) {
+                    $user = Auth::guard($guard)->user();
+                    if ($user) {
+                        switch ($user->role) {
+                            case 'admin':
+                                return redirect(RouteServiceProvider::ADMIN_HOME);
+                            case 'kepala_sekolah':
+                                return redirect(RouteServiceProvider::KEPALA_HOME);
+                            case 'guru': // Fallthrough
+                            case 'staff':
+                                return redirect(RouteServiceProvider::PEGAWAI_HOME);
+                            default:
+                                return redirect(RouteServiceProvider::HOME);
+                        }
                     }
                 }
                 return redirect(RouteServiceProvider::HOME);

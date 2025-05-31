@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/'; // Default home, can be overridden by role
+    public const HOME = '/dashboard';
     public const ADMIN_HOME = '/admin/dashboard';
     public const KEPALA_HOME = '/kepala/dashboard';
     public const PEGAWAI_HOME = '/pegawai/dashboard';
@@ -40,4 +40,4 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
     }
-} 
+}

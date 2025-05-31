@@ -75,7 +75,7 @@ class AdminController extends Controller
             Pegawai::create([
                 'user_id' => $user->id,
                 'jabatan_id' => $request->jabatan_id,
-                'nama_lengkap' => $request->nama_lengkap,
+                'nama_lengkap' => $request->name,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,

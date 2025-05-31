@@ -49,7 +49,11 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             @if(!$p->is_active)
-                                <a href="{{ route('admin.periode.activate', $p->id) }}" class="text-green-600 hover:text-green-900 mr-3">Aktifkan</a>
+                            <form action="{{ route('admin.periode.activate', $p->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="text-green-600 hover:text-green-900 mr-3" onclick="return confirm('Yakin ingin mengaktifkan periode ini?')">Aktifkan</button>
+                            </form>
                             @endif
                             <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                             <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
