@@ -1,0 +1,92 @@
+flowchart TD
+    %% User Model Functions
+    subgraph UM["User Model"]
+        UM1[Register] --> UM2[Login]
+        UM2 --> UM3[Update Profile]
+        UM3 --> UM4[Change Password]
+        UM4 --> UM5[Logout]
+        UM6[Reset Password] --> UM2
+    end
+    
+    %% Pegawai Model Functions
+    subgraph PM["Pegawai Model"]
+        PM1[Create Pegawai] --> PM2[Assign Jabatan]
+        PM2 --> PM3[Update Data]
+        PM3 --> PM4[View Profile]
+        PM4 --> PM5[Get by NIP]
+        PM6[Filter by Status] --> PM7[Search Pegawai]
+    end
+    
+    %% Periode Penilaian Model Functions
+    subgraph PPM["Periode Penilaian Model"]
+        PPM1[Create Periode] --> PPM2[Set Active Period]
+        PPM2 --> PPM3[Close Period]
+        PPM3 --> PPM4[Get Active Period]
+        PPM5[List All Periods] --> PPM6[Get Period Details]
+    end
+    
+    %% Sasaran Kerja Model Functions
+    subgraph SKM["Sasaran Kerja Model"]
+        SKM1[Buat Sasaran] --> SKM2[Set Target]
+        SKM2 --> SKM3[Set Bobot]
+        SKM3 --> SKM4[Submit Approval]
+        SKM4 --> SKM5{Status Check}
+        SKM5 -->|Draft| SKM6[Edit Sasaran]
+        SKM5 -->|Disetujui| SKM7[Lock Sasaran]
+        SKM5 -->|Ditolak| SKM8[Revisi Required]
+        SKM9[Calculate Total Bobot] --> SKM10[Validate 100%]
+    end
+    
+    %% Realisasi Kerja Model Functions
+    subgraph RKM["Realisasi Kerja Model"]
+        RKM1[Input Realisasi] --> RKM2[Upload Bukti]
+        RKM2 --> RKM3[Calculate Achievement]
+        RKM3 --> RKM4[Auto Calculate Score]
+        RKM4 --> RKM5[Save Realisasi]
+        RKM6[View History] --> RKM7[Export Report]
+    end
+    
+    %% Penilaian Perilaku Model Functions
+    subgraph PPeM["Penilaian Perilaku Model"]
+        PPeM1[Load Perilaku Items] --> PPeM2[Input Nilai]
+        PPeM2 --> PPeM3[Add Catatan]
+        PPeM3 --> PPeM4[Calculate Average]
+        PPeM4 --> PPeM5[Save Assessment]
+    end
+    
+    %% Penilaian SKP Model Functions
+    subgraph PSM["Penilaian SKP Model"]
+        PSM1[Aggregate SKP Scores] --> PSM2[Aggregate Perilaku Scores]
+        PSM2 --> PSM3[Calculate Final Score]
+        PSM3 --> PSM4[Determine Category]
+        PSM4 --> PSM5[Generate Feedback]
+        PSM5 --> PSM6[Send for Approval]
+        PSM7[Approve Assessment] --> PSM8[Finalize SKP]
+    end
+    
+    %% Rencana Tindak Lanjut Model Functions
+    subgraph RTL["Rencana Tindak Lanjut Model"]
+        RTL1[Create Action Plan] --> RTL2[Set Targets]
+        RTL2 --> RTL3[Set Deadline]
+        RTL3 --> RTL4[Track Progress]
+        RTL4 --> RTL5[Update Status]
+        RTL5 --> RTL6[Complete Plan]
+    end
+    
+    %% Relationships between models
+    UM --> PM
+    PM --> SKM
+    PPM --> SKM
+    SKM --> RKM
+    RKM --> PSM
+    PPeM --> PSM
+    PSM --> RTL
+    
+    style UM fill:#e3f2fd
+    style PM fill:#f3e5f5
+    style PPM fill:#e8f5e8
+    style SKM fill:#fff3e0
+    style RKM fill:#fce4ec
+    style PPeM fill:#f1f8e9
+    style PSM fill:#e0f2f1
+    style RTL fill:#fff8e1

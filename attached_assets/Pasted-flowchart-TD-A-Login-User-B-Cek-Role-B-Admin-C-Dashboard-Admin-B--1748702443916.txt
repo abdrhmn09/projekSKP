@@ -1,0 +1,75 @@
+flowchart TD
+    A[Login User] --> B{Cek Role}
+    
+    B -->|Admin| C[Dashboard Admin]
+    B -->|Kepala Sekolah| D[Dashboard Kepala Sekolah]
+    B -->|Guru/Staff| E[Dashboard Pegawai]
+    
+    %% Admin Flow
+    C --> C1[Kelola Data Pegawai]
+    C --> C2[Kelola Periode Penilaian]
+    C --> C3[Kelola Jabatan]
+    C --> C4[Kelola Perilaku Kerja]
+    C --> C5[Laporan Keseluruhan]
+    
+    C1 --> C1A[Tambah Pegawai]
+    C1 --> C1B[Edit Pegawai]
+    C1 --> C1C[Hapus Pegawai]
+    
+    C2 --> C2A[Buat Periode Baru]
+    C2 --> C2B[Aktivasi Periode]
+    C2 --> C2C[Tutup Periode]
+    
+    %% Kepala Sekolah Flow
+    D --> D1[Lihat Laporan SKP]
+    D --> D2[Persetujuan SKP]
+    D --> D3[Monitoring Kinerja]
+    
+    D2 --> D2A{Review SKP}
+    D2A -->|Setuju| D2B[Setujui SKP]
+    D2A -->|Revisi| D2C[Minta Revisi]
+    
+    %% Pegawai Flow
+    E --> E1[Buat Sasaran Kerja]
+    E --> E2[Input Realisasi]
+    E --> E3[Lihat Penilaian]
+    E --> E4[Rencana Tindak Lanjut]
+    
+    E1 --> E1A[Tentukan Target]
+    E1A --> E1B[Set Bobot Kegiatan]
+    E1B --> E1C[Submit Sasaran]
+    E1C --> E1D{Validasi Atasan}
+    E1D -->|Disetujui| E1E[Sasaran Aktif]
+    E1D -->|Ditolak| E1F[Revisi Sasaran]
+    E1F --> E1A
+    
+    E2 --> E2A[Pilih Sasaran Kerja]
+    E2A --> E2B[Input Kuantitas]
+    E2B --> E2C[Input Kualitas]
+    E2C --> E2D[Input Waktu]
+    E2D --> E2E[Upload Bukti]
+    E2E --> E2F[Submit Realisasi]
+    
+    E3 --> E3A[Lihat Nilai SKP]
+    E3A --> E3B[Lihat Nilai Perilaku]
+    E3B --> E3C[Lihat Kategori Nilai]
+    
+    E4 --> E4A[Lihat Feedback]
+    E4A --> E4B[Buat Rencana Perbaikan]
+    E4B --> E4C[Set Target Deadline]
+    
+    %% Proses Penilaian
+    G[Proses Penilaian Otomatis] --> G1[Hitung Nilai SKP]
+    G1 --> G2[Hitung Nilai Perilaku]
+    G2 --> G3[Hitung Nilai Total]
+    G3 --> G4[Tentukan Kategori]
+    G4 --> G5[Generate Laporan]
+    
+    %% Notification Flow
+    N[Sistem Notifikasi] --> N1[Deadline Reminder]
+    N --> N2[Status Update]
+    N --> N3[Approval Request]
+    
+    style A fill:#e1f5fe
+    style G fill:#f3e5f5
+    style N fill:#fff3e0
