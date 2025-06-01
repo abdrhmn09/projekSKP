@@ -41,7 +41,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900 max-w-xs truncate">{{ $sasaran->uraian_kegiatan }}</div>
+                            <div class="text-sm text-gray-900 max-w-xs truncate">{{ $sasaran->uraian_sasaran }}</div>
                             <div class="text-sm text-gray-500">{{ $sasaran->indikator_kinerja }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $sasaran->periode->nama_periode }}</td>

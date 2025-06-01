@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Dashboard Admin')
@@ -41,7 +42,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Periode Aktif</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $periodeAktif ? $periodeAktif->nama_periode : 'Tidak ada periode aktif' }}</dd>
+                            <dd class="text-lg font-medium text-gray-900">{{ $periodeAktif ?? '-' }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -113,41 +114,49 @@
         <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Aktivitas Terbaru</h3>
             <div class="mt-5">
-                @if($recentActivities && $recentActivities->count() > 0)
-                    <div class="flow-root">
-                        <ul class="-mb-8">
-                            @foreach($recentActivities as $index => $activity)
-                                <li>
-                                    <div class="relative pb-8">
-                                        @if(!$loop->last)
-                                            <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
-                                        @endif
-                                        <div class="relative flex space-x-3">
-                                            <div>
-                                                <span class="h-8 w-8 rounded-full bg-{{ $activity['color'] ?? 'blue' }}-500 flex items-center justify-center ring-8 ring-white">
-                                                    <i class="fas {{ $activity['icon'] ?? 'fa-info' }} text-white text-xs"></i>
-                                                </span>
-                                            </div>
-                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                                <div>
-                                                    <p class="text-sm text-gray-500">{!! $activity['message'] !!}</p>
-                                                </div>
-                                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                                    <time>{{ $activity['time'] }}</time>
-                                                </div>
-                                            </div>
+                <div class="flow-root">
+                    <ul class="-mb-8">
+                        <li>
+                            <div class="relative pb-8">
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                            <i class="fas fa-user text-white text-xs"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-500">Pegawai baru <span class="font-medium text-gray-900">Ahmad Subagja</span> ditambahkan</p>
+                                        </div>
+                                        <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                            <time>2 jam yang lalu</time>
                                         </div>
                                     </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @else
-                    <div class="text-center py-6">
-                        <i class="fas fa-inbox text-gray-400 text-3xl mb-3"></i>
-                        <p class="text-gray-500">Belum ada aktivitas terbaru</p>
-                    </div>
-                @endif
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="relative pb-8">
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                                            <i class="fas fa-calendar text-white text-xs"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-500">Periode <span class="font-medium text-gray-900">Semester Ganjil 2024</span> diaktifkan</p>
+                                        </div>
+                                        <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                            <time>1 hari yang lalu</time>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

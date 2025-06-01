@@ -8,17 +8,39 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-white flex flex-col min-h-screen">
-
-    <!-- Top Bar -->
-    <header class="bg-gray-50 border-b border-gray-200 fixed w-full top-0 z-50">
-        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center">
-                <button id="sidebarToggle" class="text-gray-600 hover:text-blue-600 focus:outline-none lg:hidden mr-3">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-                <a href="/" class="text-xl font-bold text-blue-600">SKP Online SMA</a>
-            </div>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-white text-xl font-bold">SKP Online SMA</h1>
+                    </div>
+                    <div class="hidden md:block ml-10">
+                        <div class="flex items-baseline space-x-4">
+                            @auth
+                                @if(auth()->user()->role == 'admin')
+                                    <a href="{{ route('admin.dashboard') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                                    <a href="{{ route('admin.pegawai') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Pegawai</a>
+                                    <a href="{{ route('admin.periode') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Periode</a>
+                                    <a href="{{ route('admin.jabatan') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Jabatan</a>
+                                    <a href="{{ route('admin.laporan') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Laporan</a>
+                                @elseif(auth()->user()->role == 'kepala_sekolah')
+                                    <a href="{{ route('kepala.dashboard') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                                    <a href="{{ route('kepala.persetujuan') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Persetujuan SKP</a>
+                                    <a href="{{ route('kepala.monitoring') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Monitoring</a>
+                                    <a href="{{ route('kepala.laporan') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Laporan</a>
+                                @else
+                                    <a href="{{ route('pegawai.dashboard') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                                    <a href="{{ route('pegawai.sasaran') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Sasaran Kerja</a>
+                                    <a href="{{ route('pegawai.realisasi') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Realisasi</a>
+                                    <a href="{{ route('pegawai.penilaian') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Penilaian</a>
+                                @endif
+                            @endauth
+                        </div>
+                    </div>
+                </div>
 
             @auth
             <div class="flex items-center space-x-4">
@@ -133,59 +155,5 @@
             <p>&copy; {{ date('Y') }} SKP Online SMA. All rights reserved.</p>
         </div>
     </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const profileDropdownToggle = document.getElementById('profileDropdownToggle');
-            const profileDropdownMenu = document.getElementById('profileDropdownMenu');
-
-            function toggleSidebar() {
-                sidebar.classList.toggle('-translate-x-full');
-                sidebarOverlay.classList.toggle('hidden');
-                // Remove overflow-hidden from body as sidebar is not full height overlay
-            }
-
-            function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-                sidebarOverlay.classList.add('hidden');
-            }
-            
-            sidebarToggle?.addEventListener('click', function (e) {
-                e.stopPropagation();
-                toggleSidebar();
-            });
-
-            sidebarOverlay?.addEventListener('click', function () {
-                closeSidebar();
-            });
-
-            profileDropdownToggle?.addEventListener('click', function(e) {
-                e.stopPropagation();
-                profileDropdownMenu.classList.toggle('hidden');
-            });
-
-            document.addEventListener('click', function(e) {
-                if (profileDropdownMenu && !profileDropdownMenu.contains(e.target) && profileDropdownToggle && !profileDropdownToggle.contains(e.target)) {
-                    profileDropdownMenu.classList.add('hidden');
-                }
-            });
-
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
-                        closeSidebar();
-                    }
-                    if (profileDropdownMenu && !profileDropdownMenu.classList.contains('hidden')) {
-                        profileDropdownMenu.classList.add('hidden');
-                    }
-                }
-            });
-
-            // Active link highlighting is now done with request()->routeIs() in blade
-        });
-    </script>
 </body>
 </html>

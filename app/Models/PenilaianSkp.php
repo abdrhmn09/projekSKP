@@ -16,7 +16,6 @@ class PenilaianSkp extends Model
     protected $fillable = [
         'pegawai_id',
         'periode_id',
-        'sasaran_kerja_id',
         'nilai_skp',
         'nilai_perilaku',
         'nilai_akhir',
@@ -53,10 +52,5 @@ class PenilaianSkp extends Model
     public function rencanaTindakLanjut(): HasMany
     {
         return $this->hasMany(RencanaTindakLanjut::class);
-    }
-
-    public function sasaranKerja(): BelongsTo
-    {
-        return $this->belongsTo(SasaranKerja::class, 'sasaran_kerja_id');
     }
 }

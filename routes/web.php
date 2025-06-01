@@ -43,23 +43,16 @@ Route::middleware(['auth', 'can:is-admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/periode', [AdminController::class, 'periodeIndex'])->name('periode');
     Route::get('/periode/create', [AdminController::class, 'periodeCreate'])->name('periode.create');
     Route::post('/periode', [AdminController::class, 'periodeStore'])->name('periode.store');
-    Route::get('/periode/{id}/edit', [AdminController::class, 'periodeEdit'])->name('periode.edit');
-    Route::put('/periode/{id}', [AdminController::class, 'periodeUpdate'])->name('periode.update');
-    Route::delete('/periode/{id}', [AdminController::class, 'periodeDestroy'])->name('periode.destroy');
     Route::put('/periode/{id}/activate', [AdminController::class, 'periodeActivate'])->name('periode.activate');
 
     // Jabatan Management
     Route::get('/jabatan', [AdminController::class, 'jabatanIndex'])->name('jabatan');
     Route::get('/jabatan/create', [AdminController::class, 'jabatanCreate'])->name('jabatan.create');
     Route::post('/jabatan', [AdminController::class, 'jabatanStore'])->name('jabatan.store');
-    Route::get('/jabatan/{id}/edit', [AdminController::class, 'jabatanEdit'])->name('jabatan.edit');
-    Route::put('/jabatan/{id}', [AdminController::class, 'jabatanUpdate'])->name('jabatan.update');
-    Route::delete('/jabatan/{id}', [AdminController::class, 'jabatanDestroy'])->name('jabatan.destroy');
 
     // Reports
     Route::get('/laporan', [AdminController::class, 'laporan'])->name('laporan');
     Route::get('/laporan/export', [ExportController::class, 'exportLaporan'])->name('laporan.export');
-    Route::get('/penilaian/{id}', [AdminController::class, 'penilaianDetail'])->name('penilaian.detail');
 
     // Additional admin routes
     // Sebaiknya hapus resource controller ini jika sudah didefinisikan secara individual di atas untuk menghindari duplikasi
@@ -80,11 +73,6 @@ Route::middleware(['auth', 'can:is-kepala-sekolah'])->prefix('kepala')->name('ke
     // Monitoring
     Route::get('/monitoring', [KepalaSekolahController::class, 'monitoring'])->name('monitoring');
 
-    // Penilaian
-    Route::get('/penilaian', [KepalaSekolahController::class, 'penilaian'])->name('penilaian.index');
-    Route::get('/penilaian/{sasaran}/create', [KepalaSekolahController::class, 'penilaianCreate'])->name('penilaian.create');
-    Route::post('/penilaian/{sasaran}/store', [KepalaSekolahController::class, 'penilaianStore'])->name('penilaian.store');
-
     // Reports
     Route::get('/laporan', [KepalaSekolahController::class, 'laporan'])->name('laporan');
 });
@@ -99,8 +87,6 @@ Route::middleware(['auth', 'can:is-pegawai'])->prefix('pegawai')->name('pegawai.
     Route::post('/sasaran', [PegawaiController::class, 'sasaranStore'])->name('sasaran.store');
     Route::get('/sasaran/{id}/edit', [PegawaiController::class, 'sasaranEdit'])->name('sasaran.edit');
     Route::put('/sasaran/{id}', [PegawaiController::class, 'sasaranUpdate'])->name('sasaran.update');
-    Route::get('/sasaran/{id}/detail', [PegawaiController::class, 'sasaranDetail'])->name('sasaran.detail');
-    Route::delete('/sasaran/{id}', [PegawaiController::class, 'sasaranDestroy'])->name('sasaran.destroy');
 
     // Realisasi Kerja
     Route::get('/realisasi', [PegawaiController::class, 'realisasiIndex'])->name('realisasi');

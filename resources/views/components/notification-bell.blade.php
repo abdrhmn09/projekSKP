@@ -1,3 +1,4 @@
+
 <div class="relative">
     <button id="notification-btn" class="text-white hover:text-gray-300 p-2 relative">
         <i class="fas fa-bell text-xl"></i>
@@ -26,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationBadge = document.getElementById('notification-badge');
     const notificationList = document.getElementById('notification-list');
     const markAllReadBtn = document.getElementById('mark-all-read');
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     // Toggle dropdown
     notificationBtn.addEventListener('click', function() {
@@ -54,13 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     notificationList.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500">Tidak ada notifikasi</div>';
                     notificationBadge.classList.add('hidden');
                 } else {
-                    const unreadCount = notifications.filter(n => !n.is_read).length;
-                    if (unreadCount > 0) {
-                        notificationBadge.textContent = unreadCount;
+                    notificationBadge.textContent = notifications.length;
                     notificationBadge.classList.remove('hidden');
-                    } else {
-                        notificationBadge.classList.add('hidden');
-                    }
                     
                     notifications.forEach(notification => {
                         const notificationElement = createNotificationElement(notification);
@@ -70,14 +65,13 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error loading notifications:', error);
-                notificationList.innerHTML = '<div class="px-4 py-2 text-sm text-red-500">Gagal memuat notifikasi</div>';
             });
     }
 
     // Create notification element
     function createNotificationElement(notification) {
         const div = document.createElement('div');
-        div.className = `px-4 py-3 hover:bg-gray-50 border-b border-gray-100 ${notification.is_read ? 'opacity-75' : ''}`;
+        div.className = 'px-4 py-3 hover:bg-gray-50 border-b border-gray-100';
         
         const typeColors = {
             'info': 'text-blue-600',
@@ -94,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="ml-3 flex-1">
                     <p class="text-sm font-medium text-gray-900">${notification.title}</p>
                     <p class="text-sm text-gray-600">${notification.message}</p>
-                    <p class="text-xs text-gray-400 mt-1">${formatTime(notification.created_at)}</p>
+                    <p class="text-xs text-gray-400 mt-1">${formatTime(notification.time)}</p>
                 </div>
             </div>
         `;
@@ -132,27 +126,13 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                loadNotifications(); // Reload notifications after marking as read
             notificationBadge.classList.add('hidden');
-            } else {
-                throw new Error('Failed to mark notifications as read');
-            }
-        })
-        .catch(error => {
-            console.error('Error marking notifications as read:', error);
-            alert('Gagal menandai notifikasi sebagai telah dibaca');
+            loadNotifications();
         });
     });
 
@@ -163,4 +143,3 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(loadNotifications, 30000);
 });
 </script>
-
