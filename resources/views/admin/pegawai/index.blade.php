@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -14,6 +13,12 @@
         @if(session('success'))
             <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
                 {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+                {{ session('error') }}
             </div>
         @endif
 
@@ -61,8 +66,16 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                            <a href="{{ route('admin.pegawai.edit', $p->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form action="{{ route('admin.pegawai.destroy', $p->id) }}" method="POST" class="inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin menghapus data pegawai ini?')">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach

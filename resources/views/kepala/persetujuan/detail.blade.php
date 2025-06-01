@@ -42,7 +42,7 @@
                 <dl class="grid grid-cols-1 gap-x-4 gap-y-6">
                     <div>
                         <dt class="text-sm font-medium text-gray-500">Uraian Sasaran</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $sasaran->uraian_sasaran }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900">{{ $sasaran->uraian_kegiatan }}</dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-gray-500">Indikator Kinerja</dt>

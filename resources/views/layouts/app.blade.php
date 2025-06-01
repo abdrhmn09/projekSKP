@@ -7,6 +7,7 @@
     <title>@yield('title', 'SKP Online SMA')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
@@ -30,6 +31,7 @@
                                     <a href="{{ route('kepala.dashboard') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                                     <a href="{{ route('kepala.persetujuan') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Persetujuan SKP</a>
                                     <a href="{{ route('kepala.monitoring') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Monitoring</a>
+                                    <a href="{{ route('kepala.penilaian.index') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Penilaian SKP</a>
                                     <a href="{{ route('kepala.laporan') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Laporan</a>
                                 @else
                                     <a href="{{ route('pegawai.dashboard') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
@@ -86,5 +88,7 @@
             </div>
         </div>
     </footer>
+
+    @stack('scripts')
 </body>
 </html>

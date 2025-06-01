@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SasaranKerja extends Model
 {
@@ -16,21 +17,18 @@ class SasaranKerja extends Model
     protected $fillable = [
         'pegawai_id',
         'periode_id',
-        'uraian_sasaran',
-        'indikator_kinerja',
+        'kode_sasaran',
+        'uraian_kegiatan',
         'target_kuantitas',
-        'satuan_kuantitas',
         'target_kualitas',
         'target_waktu',
-        'target_biaya',
+        'bobot_persen',
         'status',
         'catatan',
     ];
 
     protected $casts = [
-        'target_kualitas' => 'decimal:2',
-        'target_waktu' => 'date',
-        'target_biaya' => 'decimal:2',
+        'bobot_persen' => 'decimal:2',
     ];
 
     // Relationships
@@ -44,9 +42,9 @@ class SasaranKerja extends Model
         return $this->belongsTo(PeriodePenilaian::class, 'periode_id');
     }
 
-    public function realisasiKerja(): HasMany
+    public function realisasi(): HasOne
     {
-        return $this->hasMany(RealisasiKerja::class);
+        return $this->hasOne(RealisasiKerja::class, 'sasaran_kerja_id');
     }
 
     // Scopes

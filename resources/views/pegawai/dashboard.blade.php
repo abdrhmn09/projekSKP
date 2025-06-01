@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Dashboard Pegawai')
@@ -15,7 +14,17 @@
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-500">NIP: {{ auth()->user()->nip ?? '-' }}</p>
-                    <p class="text-sm text-gray-500">Periode Aktif: {{ $periodeAktif ?? '-' }}</p>
+                    <p class="text-sm text-gray-500">Periode Aktif: 
+                        @if($periodeAktif)
+                            {{ $periodeAktif->nama_periode }}
+                            <span class="block text-xs">
+                                {{ \Carbon\Carbon::parse($periodeAktif->tanggal_mulai)->format('d/m/Y') }} - 
+                                {{ \Carbon\Carbon::parse($periodeAktif->tanggal_selesai)->format('d/m/Y') }}
+                            </span>
+                        @else
+                            -
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -132,10 +141,26 @@
                         <div class="mb-4">
                             <div class="flex justify-between text-sm">
                                 <span class="font-medium text-gray-700">{{ $sasaran->uraian_kegiatan }}</span>
-                                <span class="text-gray-500">{{ $sasaran->progress ?? 0 }}%</span>
+                                <span class="text-gray-500">
+                                    @if($sasaran->realisasi)
+                                        {{ round(($sasaran->realisasi->realisasi_kuantitas / $sasaran->target_kuantitas) * 100) }}%
+                                    @else
+                                        0%
+                                    @endif
+                                </span>
                             </div>
                             <div class="mt-1 bg-gray-200 rounded-full h-2">
-                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $sasaran->progress ?? 0 }}%"></div>
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $sasaran->realisasi ? round(($sasaran->realisasi->realisasi_kuantitas / $sasaran->target_kuantitas) * 100) : 0 }}%"></div>
+                            </div>
+                            <div class="mt-1 flex justify-between text-xs text-gray-500">
+                                <span>Target: {{ $sasaran->target_kuantitas }} {{ $sasaran->satuan }}</span>
+                                <span>Realisasi: {{ $sasaran->realisasi->realisasi_kuantitas ?? 0 }} {{ $sasaran->satuan }}</span>
+                            </div>
+                            <div class="mt-1 text-xs text-gray-500">
+                                <span class="text-{{ $sasaran->status === 'approved' ? 'green' : 'yellow' }}-600">
+                                    Status: {{ ucfirst($sasaran->status) }}
+                                </span>
+                                <span class="ml-2">Bobot: {{ $sasaran->bobot_persen }}%</span>
                             </div>
                         </div>
                         @endforeach
@@ -153,37 +178,47 @@
                 <div class="mt-5">
                     <div class="flow-root">
                         <ul class="-mb-8">
+                            @forelse($timeline as $item)
                             <li>
                                 <div class="relative pb-8">
-                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                    @if(!$loop->last)
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                    @endif
                                     <div class="relative flex space-x-3">
                                         <div>
-                                            <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                                <i class="fas fa-target text-white text-xs"></i>
-                                            </span>
+                                            @if($item['event'] === 'Sasaran kerja dibuat')
+                                                <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-target text-white text-xs"></i>
+                                                </span>
+                                            @else
+                                                <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-check text-white text-xs"></i>
+                                                </span>
+                                            @endif
                                         </div>
                                         <div class="min-w-0 flex-1 pt-1.5">
-                                            <p class="text-sm text-gray-500">Sasaran kerja dibuat</p>
-                                            <p class="text-xs text-gray-400">Deadline: {{ $deadlineSasaran ?? '-' }}</p>
+                                            <p class="text-sm text-gray-500">{{ $item['event'] }}</p>
+                                            <p class="text-xs text-gray-400">
+                                                @if($item['deadline'])
+                                                    Deadline: {{ \Carbon\Carbon::parse($item['deadline'])->format('d/m/Y') }}
+                                                @endif
+                                            </p>
+                                            @if($item['event'] === 'Sasaran kerja dibuat')
+                                                <p class="text-xs text-{{ $item['status'] === 'approved' ? 'green' : 'yellow' }}-600 mt-1">
+                                                    Status: {{ ucfirst($item['status']) }}
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </li>
+                            @empty
                             <li>
-                                <div class="relative pb-8">
-                                    <div class="relative flex space-x-3">
-                                        <div>
-                                            <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                                <i class="fas fa-check text-white text-xs"></i>
-                                            </span>
-                                        </div>
-                                        <div class="min-w-0 flex-1 pt-1.5">
-                                            <p class="text-sm text-gray-500">Input realisasi kerja</p>
-                                            <p class="text-xs text-gray-400">Deadline: {{ $deadlineRealisasi ?? '-' }}</p>
-                                        </div>
-                                    </div>
+                                <div class="text-center text-sm text-gray-500 py-4">
+                                    Belum ada aktivitas
                                 </div>
                             </li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>

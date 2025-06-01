@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -11,15 +10,14 @@ return new class extends Migration
     {
         Schema::create('sasaran_kerja', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pegawai_id')->constrained('pegawai');
-            $table->foreignId('periode_id')->constrained('periode_penilaian');
-            $table->string('uraian_sasaran');
-            $table->text('indikator_kinerja');
-            $table->integer('target_kuantitas');
-            $table->string('satuan_kuantitas');
-            $table->decimal('target_kualitas', 5, 2);
+            $table->foreignId('pegawai_id')->constrained('pegawai')->onDelete('cascade');
+            $table->foreignId('periode_id')->constrained('periode_penilaian')->onDelete('cascade');
+            $table->string('kode_sasaran');
+            $table->text('uraian_kegiatan');
+            $table->text('target_kuantitas');
+            $table->text('target_kualitas');
             $table->date('target_waktu');
-            $table->decimal('target_biaya', 15, 2)->nullable();
+            $table->decimal('bobot_persen', 5, 2);
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
             $table->text('catatan')->nullable();
             $table->timestamps();

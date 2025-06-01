@@ -33,7 +33,7 @@
                     @foreach($realisasi as $r)
                     <tr>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900 max-w-xs truncate">{{ $r->sasaranKerja->uraian_sasaran }}</div>
+                            <div class="text-sm text-gray-900 max-w-xs truncate">{{ $r->sasaranKerja->uraian_kegiatan }}</div>
                         </td>
                         <td class="px-6 py-4">
                             <div class="text-sm text-gray-900 max-w-xs truncate">{{ $r->uraian_realisasi }}</div>

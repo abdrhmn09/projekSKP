@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Dashboard Kepala Sekolah')
@@ -59,7 +58,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">SKP Disetujui</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $skpDisetujui ?? 0 }}</dd>
+                            <dd class="text-lg font-medium text-gray-900">{{ $sudahDiapprove ?? 0 }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -164,9 +163,12 @@
                             <span class="text-sm font-medium text-gray-700">{{ $kategori }}</span>
                             <div class="flex items-center space-x-2">
                                 <div class="w-24 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-{{ $color }}-600 h-2 rounded-full" style="width: {{ $distribusiNilai[$kategori] ?? 0 }}%"></div>
+                                    <div class="bg-{{ $color }}-600 h-2 rounded-full" style="width: {{ $distribusiNilai[$kategori] }}%"></div>
                                 </div>
-                                <span class="text-sm text-gray-500">{{ $jumlahNilai[$kategori] ?? 0 }}</span>
+                                <span class="text-sm text-gray-500">
+                                    {{ $jumlahNilai[$kategori] }}
+                                    <span class="text-xs text-gray-400">({{ number_format($distribusiNilai[$kategori], 1) }}%)</span>
+                                </span>
                             </div>
                         </div>
                         @endforeach
@@ -182,45 +184,48 @@
                 <div class="mt-5">
                     <div class="flow-root">
                         <ul class="-mb-8">
+                            @forelse($aktivitasTerbaru as $aktivitas)
                             <li>
                                 <div class="relative pb-8">
-                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                    @if(!$loop->last)
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                    @endif
                                     <div class="relative flex space-x-3">
                                         <div>
-                                            <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                                <i class="fas fa-check text-white text-xs"></i>
+                                            <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white
+                                                {{ $aktivitas->status === 'approved' ? 'bg-green-500' : 
+                                                   ($aktivitas->status === 'rejected' ? 'bg-red-500' : 'bg-blue-500') }}">
+                                                <i class="fas {{ $aktivitas->status === 'approved' ? 'fa-check' : 
+                                                                ($aktivitas->status === 'rejected' ? 'fa-times' : 'fa-file') }} text-white text-xs"></i>
                                             </span>
                                         </div>
                                         <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                             <div>
-                                                <p class="text-sm text-gray-500">SKP <span class="font-medium text-gray-900">Ahmad Subagja</span> disetujui</p>
+                                                <p class="text-sm text-gray-500">
+                                                    @if($aktivitas->status === 'submitted')
+                                                        Sasaran baru dari 
+                                                    @elseif($aktivitas->status === 'approved')
+                                                        SKP disetujui dari
+                                                    @else
+                                                        SKP ditolak dari
+                                                    @endif
+                                                    <span class="font-medium text-gray-900">{{ $aktivitas->pegawai->nama_lengkap ?? 'N/A' }}</span>
+                                                </p>
                                             </div>
                                             <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                                <time>1 jam yang lalu</time>
+                                                <time>{{ $aktivitas->updated_at->diffForHumans() }}</time>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </li>
+                            @empty
                             <li>
-                                <div class="relative pb-8">
-                                    <div class="relative flex space-x-3">
-                                        <div>
-                                            <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                                <i class="fas fa-file text-white text-xs"></i>
-                                            </span>
-                                        </div>
-                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                            <div>
-                                                <p class="text-sm text-gray-500">Sasaran baru dari <span class="font-medium text-gray-900">Siti Aminah</span></p>
-                                            </div>
-                                            <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                                <time>3 jam yang lalu</time>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="text-center text-sm text-gray-500 py-4">
+                                    Belum ada aktivitas terbaru
                                 </div>
                             </li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
