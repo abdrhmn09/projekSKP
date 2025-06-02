@@ -1,61 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Sistem Pengelolaan SKP (Sasaran Kinerja Pegawai) - projekSKP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem berbasis web untuk pengelolaan Sasaran Kinerja Pegawai (SKP) secara komprehensif, mulai dari perencanaan, pelaksanaan, penilaian, hingga pelaporan kinerja pegawai.
 
-## About Laravel
+## Demo Aplikasi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Lihat demo aplikasi ini di: https://youtu.be/kcsjyhvxpTU
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Gunakan akun berikut untuk mencoba:
+Admin: `123456789` / `admin123`
+kepala sekolah : `196501011990031001`/ `kepala123`
+Pegawai: `198203152006011002` / `guru123`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Fitur Utama
 
-## Learning Laravel
+*   Manajemen Data Pegawai dan Atasan penilai.
+*   Penyusunan Rencana SKP (Sasaran Kinerja Pegawai) tahunan dan bulanan.
+*   Pengisian Realisasi Kegiatan Tugas Jabatan dan Target Kinerja.
+*   Proses Penilaian SKP oleh Atasan Penilai.
+*   Validasi dan Persetujuan SKP oleh Pejabat yang Berwenang.
+*   Monitoring dan Evaluasi Kinerja Pegawai.
+*   Pencetakan Dokumen SKP (Formulir Rencana SKP, Pengukuran, Penilaian, dll.).
+*   Manajemen Pengguna dengan berbagai level akses (Admin, Pegawai, kepala sekolah).
+*   Notifikasi terkait progres dan tenggat waktu SKP.
+*   Laporan dan rekapitulasi kinerja individu maupun unit kerja.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Prasyarat
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Sebelum menginstall sistem ini, pastikan komputer Anda telah terinstall:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+*   PHP >= 8.1 (Sesuaikan dengan versi PHP yang didukung proyek Anda)
+*   Composer (Dependency Manager untuk PHP)
+*   Node.js & NPM (Untuk manajemen package JavaScript dan kompilasi aset)
+*   MySQL/MariaDB (atau database lain yang Anda konfigurasikan)
+*   Git (Untuk version control)
 
-## Laravel Sponsors
+## Cara Instalasi
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1.  **Clone repository ini dan masuk ke direktori:**
+    ```bash
+    git clone https://github.com/abdrhmn09/projekSKP.git
+    cd projekSKP
+    ```
 
-### Premium Partners
+2.  **Install dependencies PHP melalui Composer:**
+    ```bash
+    composer install
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3.  **Install dependencies JavaScript melalui NPM:**
+    ```bash
+    npm install
+    ```
 
-## Contributing
+4.  **Salin file `.env.example` menjadi `.env`:**
+    Pada Windows (PowerShell/CMD):
+    ```bash
+    copy .env.example .env
+    ```
+    Pada Linux/macOS:
+    ```bash
+    cp .env.example .env
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5.  **Generate application key Laravel:**
+    ```bash
+    php artisan key:generate
+    ```
 
-## Code of Conduct
+6.  **Konfigurasi database di file `.env`:**
+    Buka file `.env` dan sesuaikan variabel berikut dengan konfigurasi database Anda. Pastikan Anda sudah membuat database kosong untuk proyek ini.
+    ```ini
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=db_projekskp2 # Ganti dengan nama database Anda
+    DB_USERNAME=root          # Ganti dengan username database Anda
+    DB_PASSWORD=              # Ganti dengan password database Anda (kosongkan jika tidak ada)
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7.  **Jalankan migrasi database dan seeder:**
+    Untuk membuat struktur tabel dan mengisi data awal.
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+    Jika Anda hanya ingin menjalankan migrasi tanpa menghapus data yang sudah ada (jika tabel sudah ada dan Anda hanya menambahkan migrasi baru):
+    ```bash
+    php artisan migrate --seed
+    ```
 
-## Security Vulnerabilities
+## Menjalankan Aplikasi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1.  **Jalankan server pengembangan Laravel:**
+    ```bash
+    php artisan serve
+    ```
+    Biasanya aplikasi akan berjalan di `http://localhost:8000`.
 
-## License
+2.  **Kompilasi aset frontend (jika menggunakan Vite/Mix):**
+    Buka terminal baru, masuk ke direktori proyek, dan jalankan:
+    ```bash
+    npm run dev
+    ```
+    Ini akan mengkompilasi aset CSS dan JavaScript Anda dan menjalankannya dalam mode watch.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3.  **Akses aplikasi di browser:**
+    Buka browser dan kunjungi alamat yang ditampilkan oleh `php artisan serve` (biasanya `http://localhost:8000`).
+
+
+## Struktur Sistem
+
+*   `/app` - Core aplikasi
+*   `/database` - Migrasi dan seeder
+*   `/resources` - Views dan assets
+*   `/routes` - File routing
+*   `/public` - File publik
+*   `/tests` - Unit dan feature tests
+
+## Kontribusi
+
+Jika Anda ingin berkontribusi pada pengembangan proyek ini, silakan ikuti langkah-langkah berikut:
+
+1.  **Fork** repository ini.
+2.  Buat **branch baru** untuk fitur atau perbaikan Anda (`git checkout -b fitur/NamaFiturAnda` atau `git checkout -b fix/DeskripsiPerbaikan`).
+3.  Lakukan **perubahan** dan **commit** pekerjaan Anda (`git commit -am 'Menambahkan fitur X'`).
+4.  **Push** ke branch Anda (`git push origin fitur/NamaFiturAnda`).
+5.  Buat **Pull Request** baru ke branch `main` (atau `master`) dari repository asli.
+
+---

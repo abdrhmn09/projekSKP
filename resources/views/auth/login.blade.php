@@ -5,7 +5,7 @@
 @section('form-content')
     <h1 class="text-3xl font-bold text-gray-800 mb-3">Sign in</h1>
     {{-- Social login icons removed as per request --}}
-    <p class="text-sm text-gray-600 mb-8">atau gunakan akun anda</p>
+    <p class="text-sm text-gray-600 mb-8">gunakan akun anda</p>
 
     <!-- Session Status -->
     @if (session('status'))
@@ -59,7 +59,7 @@
 @endsection
 
 @section('info-content')
-    <h1 class="text-4xl font-bold mb-4">Halo!</h1>
+    <h2 class="text-4xl font-bold mb-4 text-center">Sistem Pengelolaan SKP</h2>
     <p class="text-center text-md mb-8 leading-relaxed">
         silahkan login dan mulai gunakan<br/>layanan kami segera
     </p>
