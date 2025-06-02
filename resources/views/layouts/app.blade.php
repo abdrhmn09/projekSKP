@@ -128,6 +128,7 @@
                             $navLinks = [
                                 ['route' => 'kepala.dashboard', 'icon' => 'fa-tachometer-alt', 'text' => 'Dashboard'],
                                 ['route' => 'kepala.persetujuan', 'icon' => 'fa-check-circle', 'text' => 'Persetujuan SKP'],
+                                ['route' => 'kepala.penilaian-skp.index', 'icon' => 'fa-clipboard-check', 'text' => 'Penilaian SKP'],
                                 ['route' => 'kepala.monitoring', 'icon' => 'fa-eye', 'text' => 'Monitoring Pegawai'],
                                 ['route' => 'kepala.laporan', 'icon' => 'fa-chart-bar', 'text' => 'Laporan Kinerja'],
                             ];

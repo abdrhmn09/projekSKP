@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 
 class SasaranKerja extends Model
@@ -47,9 +48,14 @@ class SasaranKerja extends Model
         return $this->belongsTo(PeriodePenilaian::class, 'periode_id');
     }
 
-    public function realisasiKerja(): HasMany
+    public function realisasiKerja(): HasOne
     {
-        return $this->hasMany(RealisasiKerja::class);
+        return $this->hasOne(RealisasiKerja::class, 'sasaran_kerja_id', 'id');
+    }
+
+    public function penilaianSkp(): HasOne
+    {
+        return $this->hasOne(PenilaianSkp::class, 'sasaran_kerja_id', 'id');
     }
 
     // Scopes

@@ -18,19 +18,20 @@ class PenilaianSkp extends Model
         'pegawai_id',
         'periode_id',
         'sasaran_kerja_id',
-        'nilai_skp',
-        'nilai_perilaku',
+        'nilai_rata_rata_realisasi',
+        'detail_penilaian',
         'nilai_akhir',
         'kategori_nilai',
-        'catatan_penilaian',
+        'catatan_kepala_sekolah',
+        'feedback_perilaku',
         'penilai_id',
         'status',
         'tanggal_penilaian',
     ];
 
     protected $casts = [
-        'nilai_skp' => 'decimal:2',
-        'nilai_perilaku' => 'decimal:2',
+        'nilai_rata_rata_realisasi' => 'decimal:2',
+        'detail_penilaian' => 'array',
         'nilai_akhir' => 'decimal:2',
         'tanggal_penilaian' => 'datetime',
     ];
@@ -59,6 +60,11 @@ class PenilaianSkp extends Model
     public function sasaranKerja(): BelongsTo
     {
         return $this->belongsTo(SasaranKerja::class, 'sasaran_kerja_id');
+    }
+
+    public function penilaianPerilaku(): HasMany
+    {
+        return $this->hasMany(PenilaianPerilaku::class, 'penilaian_skp_id');
     }
 
     // Scopes

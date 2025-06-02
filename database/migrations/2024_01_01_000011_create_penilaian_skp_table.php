@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,14 +12,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pegawai_id')->constrained('pegawai');
             $table->foreignId('periode_id')->constrained('periode_penilaian');
-            $table->decimal('nilai_skp', 5, 2);
-            $table->decimal('nilai_perilaku', 5, 2);
-            $table->decimal('nilai_akhir', 5, 2);
-            $table->enum('kategori_nilai', ['Sangat Baik', 'Baik', 'Butuh Perbaikan', 'Kurang', 'Sangat Kurang']);
-            $table->text('catatan_penilaian')->nullable();
-            $table->foreignId('penilai_id')->constrained('users');
-            $table->enum('status', ['draft', 'submitted', 'approved'])->default('draft');
-            $table->timestamp('tanggal_penilaian');
+            $table->foreignId('sasaran_kerja_id')->nullable()->constrained('sasaran_kerja')->onDelete('cascade');
+            $table->json('detail_penilaian')->nullable();
+            $table->decimal('nilai_rata_rata_realisasi', 5, 2)->nullable();
+            $table->decimal('nilai_akhir', 5, 2)->nullable();
+            $table->enum('kategori_nilai', ['Sangat Baik', 'Baik', 'Cukup', 'Kurang', 'Sangat Kurang'])->nullable();
+            $table->text('catatan_kepala_sekolah')->nullable();
+            $table->text('feedback_perilaku')->nullable();
+            $table->foreignId('penilai_id')->nullable()->constrained('users');
+            $table->enum('status', ['draft', 'final'])->default('draft');
+            $table->timestamp('tanggal_penilaian')->nullable();
             $table->timestamps();
         });
     }

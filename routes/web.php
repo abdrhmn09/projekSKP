@@ -76,6 +76,12 @@ Route::middleware(['auth', 'can:is-kepala-sekolah'])->prefix('kepala')->name('ke
     Route::post('/persetujuan/{id}/approve', [KepalaSekolahController::class, 'approve'])->name('persetujuan.approve');
     Route::post('/persetujuan/{id}/reject', [KepalaSekolahController::class, 'reject'])->name('persetujuan.reject');
 
+    // Penilaian SKP
+    Route::get('/penilaian-skp', [KepalaSekolahController::class, 'penilaianSkpIndex'])->name('penilaian-skp.index');
+    Route::get('/penilaian-skp/{id}/nilai', [KepalaSekolahController::class, 'penilaianSkpCreate'])->name('penilaian-skp.create');
+    Route::post('/penilaian-skp/{id}', [KepalaSekolahController::class, 'penilaianSkpStore'])->name('penilaian-skp.store');
+    Route::get('/penilaian-skp/bukti-dukung/{filename}', [KepalaSekolahController::class, 'showBuktiDukungPenilaian'])->name('penilaian-skp.bukti_dukung');
+
     // Monitoring
     Route::get('/monitoring', [KepalaSekolahController::class, 'monitoring'])->name('monitoring');
 
