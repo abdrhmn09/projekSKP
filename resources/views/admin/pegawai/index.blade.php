@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -60,9 +59,18 @@
                                 Aktif
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="{{ route('admin.pegawai.edit', $p->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3 font-semibold" title="Edit Pegawai">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </a>
+                            <form action="{{ route('admin.pegawai.destroy', $p->id) }}" method="POST" class="inline-block"
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus data pegawai {{ $p->user->name }}? Tindakan ini juga akan menghapus data user terkait dan tidak dapat diurungkan.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900 font-semibold" title="Hapus Pegawai">
+                                    <i class="fas fa-trash-alt mr-1"></i>Hapus
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach

@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -30,39 +29,68 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($periode as $p)
+                    @forelse($periode as $p)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $p->nama_periode }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ucfirst($p->jenis_periode) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($p->tanggal_mulai)->format('d/m/Y') }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($p->tanggal_selesai)->format('d/m/Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($p->tanggal_mulai)->isoFormat('LL') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($p->tanggal_selesai)->isoFormat('LL') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($p->is_active)
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Aktif
+                                    <i class="fas fa-check-circle mr-1"></i>Aktif
                                 </span>
                             @else
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                    Tidak Aktif
+                                    <i class="fas fa-minus-circle mr-1"></i>Tidak Aktif
                                 </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             @if(!$p->is_active)
-                            <form action="{{ route('admin.periode.activate', $p->id) }}" method="POST" class="inline">
-                                @csrf
-                                @method('PUT')
-                                <button type="submit" class="text-green-600 hover:text-green-900 mr-3" onclick="return confirm('Yakin ingin mengaktifkan periode ini?')">Aktifkan</button>
-                            </form>
+                                <form action="{{ route('admin.periode.activate', $p->id) }}" method="POST" class="inline-block mr-2 mb-1 lg:mb-0"
+                                      onsubmit="return confirm('Yakin ingin mengaktifkan periode \'{{ $p->nama_periode }}\'? Periode lain yang aktif akan dinonaktifkan.');">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="text-green-600 hover:text-green-900 font-semibold" title="Aktifkan Periode">
+                                        <i class="fas fa-toggle-on mr-1"></i>Aktifkan
+                                    </button>
+                                </form>
                             @endif
-                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                            <a href="{{ route('admin.periode.edit', $p->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-2 font-semibold" title="Edit Periode">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </a>
+                            @if(!$p->is_active)
+                                <form action="{{ route('admin.periode.destroy', $p->id) }}" method="POST" class="inline-block"
+                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus periode \'{{ $p->nama_periode }}\'? Tindakan ini tidak dapat diurungkan dan hanya bisa dilakukan jika periode tidak aktif dan tidak memiliki SKP atau Penilaian terkait.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900 font-semibold" title="Hapus Periode">
+                                        <i class="fas fa-trash-alt mr-1"></i>Hapus
+                                    </button>
+                                </form>
+                            @else
+                                <button class="text-gray-400 cursor-not-allowed font-semibold" title="Periode aktif tidak dapat dihapus">
+                                    <i class="fas fa-trash-alt mr-1"></i>Hapus
+                                </button>
+                            @endif
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Tidak ada data periode penilaian.</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
+
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
 
         <div class="mt-4">
             {{ $periode->links() }}

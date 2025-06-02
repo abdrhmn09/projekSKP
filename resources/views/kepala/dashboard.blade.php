@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Dashboard Kepala Sekolah')
@@ -9,7 +8,7 @@
     <div class="bg-white overflow-hidden shadow rounded-lg">
         <div class="px-4 py-5 sm:p-6">
             <h1 class="text-2xl font-bold text-gray-900">Dashboard Kepala Sekolah</h1>
-            <p class="mt-1 text-sm text-gray-600">Monitoring dan persetujuan SKP pegawai</p>
+            <p class="mt-1 text-sm text-gray-600">Monitoring dan persetujuan SKP pegawai. Periode Aktif: {{ $periodeAktif ? $periodeAktif->nama . ' (' . $periodeAktif->tanggal_mulai->format('d M Y') . ' - ' . $periodeAktif->tanggal_selesai->format('d M Y') . ')' : 'Tidak ada periode aktif' }}</p>
         </div>
     </div>
 
@@ -42,7 +41,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Menunggu Persetujuan</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $menungguPersetujuan ?? 0 }}</dd>
+                            <dd class="text-lg font-medium text-gray-900">{{ $menungguPersetujuanCount ?? 0 }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -58,8 +57,8 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">SKP Disetujui</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $skpDisetujui ?? 0 }}</dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">SKP Disetujui (Periode Aktif)</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ $skpDisetujuiCount ?? 0 }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -75,8 +74,8 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Rata-rata Nilai</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $rataRataNilai ?? '-' }}</dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Rata-rata Nilai (Periode Aktif)</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ $rataRataNilai ?? 'N/A' }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -88,63 +87,57 @@
     <div class="bg-white shadow rounded-lg">
         <div class="px-4 py-5 sm:p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">SKP Menunggu Persetujuan</h3>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">SKP Terbaru Menunggu Persetujuan (Maks 5)</h3>
+                @if($menungguPersetujuanCount > 0)
                 <a href="{{ route('kepala.persetujuan') }}" class="text-blue-600 hover:text-blue-500 text-sm font-medium">
-                    Lihat Semua <i class="fas fa-arrow-right ml-1"></i>
+                    Lihat Semua ({{ $menungguPersetujuanCount }}) <i class="fas fa-arrow-right ml-1"></i>
                 </a>
+                @endif
             </div>
-            <div class="overflow-hidden">
+            <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pegawai</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sasaran</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Ajuan</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Periode</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tgl Ajuan</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @if(isset($sasaranMenunggu) && $sasaranMenunggu->count() > 0)
-                            @foreach($sasaranMenunggu as $sasaran)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                                <i class="fas fa-user text-gray-600"></i>
-                                            </div>
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ $sasaran->pegawai->nama_lengkap ?? 'N/A' }}</div>
-                                            <div class="text-sm text-gray-500">{{ $sasaran->pegawai->nip ?? 'N/A' }}</div>
+                        @forelse($latestSasaranMenunggu as $sasaran)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <!-- Placeholder for avatar, can be improved with actual images or initials -->
+                                        <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                            <i class="fas fa-user text-gray-600"></i> 
                                         </div>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-900">{{ Str::limit($sasaran->uraian_kegiatan, 50) }}</div>
-                                    <div class="text-sm text-gray-500">Bobot: {{ $sasaran->bobot_persen }}%</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $sasaran->created_at->format('d/m/Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        Menunggu
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="{{ route('kepala.persetujuan.detail', $sasaran->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Review</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
-                                    Tidak ada sasaran yang menunggu persetujuan
-                                </td>
-                            </tr>
-                        @endif
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ $sasaran->pegawai->user->name ?? ($sasaran->pegawai->nama_lengkap ?? 'N/A') }}</div>
+                                        <div class="text-sm text-gray-500">NIP: {{ $sasaran->pegawai->nip ?? 'N/A' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $sasaran->periode->nama ?? 'N/A' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $sasaran->created_at ? $sasaran->created_at->format('d/m/Y H:i') : 'N/A' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="{{ route('kepala.persetujuan.detail', $sasaran->id) }}" class="text-blue-600 hover:text-blue-900">Review</a>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                                Tidak ada sasaran yang menunggu persetujuan saat ini.
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -156,21 +149,46 @@
         <!-- Performance Chart -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Distribusi Nilai SKP</h3>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Distribusi Nilai SKP (Final - {{ $periodeAktif ? 'Periode Aktif' : 'Semua Periode' }})</h3>
                 <div class="mt-5">
-                    <div class="space-y-3">
-                        @foreach(['Sangat Baik' => 'green', 'Baik' => 'blue', 'Butuh Perbaikan' => 'yellow', 'Kurang' => 'orange', 'Sangat Kurang' => 'red'] as $kategori => $color)
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-gray-700">{{ $kategori }}</span>
-                            <div class="flex items-center space-x-2">
-                                <div class="w-24 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-{{ $color }}-600 h-2 rounded-full" style="width: {{ $distribusiNilai[$kategori] ?? 0 }}%"></div>
-                                </div>
-                                <span class="text-sm text-gray-500">{{ $jumlahNilai[$kategori] ?? 0 }}</span>
-                            </div>
+                    @if(!empty($distribusiKategori))
+                        @php
+                            $kategoriOrder = ['Sangat Baik', 'Baik', 'Cukup', 'Butuh Perbaikan', 'Kurang', 'Sangat Kurang'];
+                            $colorMap = [
+                                'Sangat Baik' => 'green',
+                                'Baik' => 'blue',
+                                'Cukup' => 'teal', // Changed from yellow for better visibility
+                                'Butuh Perbaikan' => 'yellow',
+                                'Kurang' => 'orange',
+                                'Sangat Kurang' => 'red'
+                            ];
+                            $totalNilaiDalamDistribusi = array_sum($distribusiKategori);
+                        @endphp
+                        <div class="space-y-3">
+                            @foreach($kategoriOrder as $kategori)
+                                @if(isset($distribusiKategori[$kategori]) && $distribusiKategori[$kategori] > 0)
+                                    @php
+                                        $jumlah = $distribusiKategori[$kategori];
+                                        $persentase = ($totalNilaiDalamDistribusi > 0) ? ($jumlah / $totalNilaiDalamDistribusi) * 100 : 0;
+                                        $warna = $colorMap[$kategori] ?? 'gray';
+                                    @endphp
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium text-gray-700 w-1/3">{{ $kategori }}</span>
+                                        <div class="w-2/3 flex items-center space-x-2">
+                                            <div class="w-full bg-gray-200 rounded-full h-4">
+                                                <div class="bg-{{ $warna }}-500 h-4 rounded-full text-xs font-medium text-white text-center p-0.5 leading-none" style="width: {{ round($persentase) }}%">
+                                                   {{ round($persentase) }}% 
+                                                </div>
+                                            </div>
+                                            <span class="text-sm text-gray-600 font-semibold w-8 text-right">{{ $jumlah }}</span>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
-                        @endforeach
-                    </div>
+                    @else
+                        <p class="text-sm text-gray-500">Tidak ada data distribusi nilai untuk ditampilkan.</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -178,50 +196,39 @@
         <!-- Recent Activities -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Aktivitas Terbaru</h3>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Aktivitas Terbaru (30 Hari Terakhir)</h3>
                 <div class="mt-5">
                     <div class="flow-root">
+                        @if(!empty($recentActivities))
                         <ul class="-mb-8">
+                            @foreach($recentActivities as $activity)
                             <li>
                                 <div class="relative pb-8">
-                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                    @if(!$loop->last)
+                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                    @endif
                                     <div class="relative flex space-x-3">
                                         <div>
-                                            <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                                <i class="fas fa-check text-white text-xs"></i>
+                                            <span class="h-8 w-8 rounded-full {{ explode(' ', $activity['icon'])[1] ?? 'bg-gray-400' }} flex items-center justify-center ring-8 ring-white">
+                                                <i class="fas {{ explode(' ', $activity['icon'])[0] }} text-white text-xs"></i>
                                             </span>
                                         </div>
                                         <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                             <div>
-                                                <p class="text-sm text-gray-500">SKP <span class="font-medium text-gray-900">Ahmad Subagja</span> disetujui</p>
+                                                <p class="text-sm text-gray-700">{!! $activity['message'] !!}</p> 
                                             </div>
                                             <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                                <time>1 jam yang lalu</time>
+                                                <time datetime="{{ $activity['activity_timestamp']->toIso8601String() }}">{{ $activity['time_diff'] }}</time>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div class="relative pb-8">
-                                    <div class="relative flex space-x-3">
-                                        <div>
-                                            <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                                <i class="fas fa-file text-white text-xs"></i>
-                                            </span>
-                                        </div>
-                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                            <div>
-                                                <p class="text-sm text-gray-500">Sasaran baru dari <span class="font-medium text-gray-900">Siti Aminah</span></p>
-                                            </div>
-                                            <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                                <time>3 jam yang lalu</time>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
+                            @endforeach
                         </ul>
+                        @else
+                        <p class="text-sm text-gray-500">Tidak ada aktivitas terbaru untuk ditampilkan.</p>
+                        @endif
                     </div>
                 </div>
             </div>

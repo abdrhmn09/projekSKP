@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Dashboard Admin')
@@ -42,7 +41,16 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Periode Aktif</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $periodeAktif ?? '-' }}</dd>
+                            <dd class="text-lg font-medium text-gray-900">
+                                @if($periodeAktif)
+                                    {{ $periodeAktif->nama_periode }}
+                                    <span class="block text-xs text-gray-500">
+                                        {{ $periodeAktif->tanggal_mulai->isoFormat('LL') }} - {{ $periodeAktif->tanggal_selesai->isoFormat('LL') }}
+                                    </span>
+                                @else
+                                    -
+                                @endif
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -115,47 +123,36 @@
             <h3 class="text-lg leading-6 font-medium text-gray-900">Aktivitas Terbaru</h3>
             <div class="mt-5">
                 <div class="flow-root">
+                    @if($activities->isNotEmpty())
                     <ul class="-mb-8">
+                        @foreach($activities as $activity)
                         <li>
                             <div class="relative pb-8">
-                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                @if(!$loop->last)
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                @endif
                                 <div class="relative flex space-x-3">
                                     <div>
-                                        <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                            <i class="fas fa-user text-white text-xs"></i>
+                                        <span class="h-8 w-8 rounded-full bg-{{ $activity->color }}-500 flex items-center justify-center ring-8 ring-white">
+                                            <i class="fas {{ $activity->icon }} text-white text-xs"></i>
                                         </span>
                                     </div>
                                     <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                         <div>
-                                            <p class="text-sm text-gray-500">Pegawai baru <span class="font-medium text-gray-900">Ahmad Subagja</span> ditambahkan</p>
+                                            <p class="text-sm text-gray-700">{!! $activity->description !!}</p> 
                                         </div>
                                         <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                            <time>2 jam yang lalu</time>
+                                            <time title="{{ $activity->time->format('Y-m-d H:i:s') }}">{{ $activity->time->diffForHumans() }}</time>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </li>
-                        <li>
-                            <div class="relative pb-8">
-                                <div class="relative flex space-x-3">
-                                    <div>
-                                        <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                            <i class="fas fa-calendar text-white text-xs"></i>
-                                        </span>
-                                    </div>
-                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                        <div>
-                                            <p class="text-sm text-gray-500">Periode <span class="font-medium text-gray-900">Semester Ganjil 2024</span> diaktifkan</p>
-                                        </div>
-                                        <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                            <time>1 hari yang lalu</time>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                        @endforeach
                     </ul>
+                    @else
+                    <p class="text-sm text-gray-500">Tidak ada aktivitas terbaru.</p>
+                    @endif
                 </div>
             </div>
         </div>

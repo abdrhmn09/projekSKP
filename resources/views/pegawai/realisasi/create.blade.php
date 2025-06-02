@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -6,7 +5,7 @@
     <div class="px-4 py-6 sm:px-0">
         <h1 class="text-2xl font-bold text-gray-900 mb-6">Input Realisasi Kerja</h1>
 
-        <form action="{{ route('pegawai.realisasi.store') }}" method="POST" class="bg-white shadow-sm rounded-lg p-6">
+        <form action="{{ route('pegawai.realisasi.store') }}" method="POST" class="bg-white shadow-sm rounded-lg p-6" enctype="multipart/form-data">
             @csrf
             
             <div class="space-y-6">
@@ -49,7 +48,8 @@
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Bukti Dukung</label>
-                    <textarea name="bukti_dukung" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Uraikan bukti dukung atau dokumen pendukung..."></textarea>
+                    <input type="file" name="bukti_dukung" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                    <p class="mt-1 text-xs text-gray-500">Maksimal ukuran file: 4MB. Format: JPG, PNG, PDF, DOC, DOCX.</p>
                 </div>
             </div>
             

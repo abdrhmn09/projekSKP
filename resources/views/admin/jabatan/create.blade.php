@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -12,13 +11,21 @@
             <div class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Nama Jabatan</label>
-                    <input type="text" name="nama_jabatan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    <input type="text" name="nama_jabatan" value="{{ old('nama_jabatan') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    @error('nama_jabatan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Kode Jabatan</label>
+                    <input type="text" name="kode_jabatan" value="{{ old('kode_jabatan') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                     <p class="mt-1 text-sm text-gray-500">Contoh: GR, WK, KS. Kode ini harus unik.</p>
+                    @error('kode_jabatan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Tunjangan Jabatan</label>
-                    <input type="number" name="tunjangan_jabatan" min="0" step="1000" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    <p class="mt-1 text-sm text-gray-500">Kosongkan jika tidak ada tunjangan</p>
+                    <input type="number" name="tunjangan_jabatan" value="{{ old('tunjangan_jabatan', 0) }}" min="0" step="1000" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    @error('tunjangan_jabatan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
             

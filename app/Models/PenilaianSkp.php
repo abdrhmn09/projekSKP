@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class PenilaianSkp extends Model
 {
@@ -16,6 +17,7 @@ class PenilaianSkp extends Model
     protected $fillable = [
         'pegawai_id',
         'periode_id',
+        'sasaran_kerja_id',
         'nilai_skp',
         'nilai_perilaku',
         'nilai_akhir',
@@ -52,5 +54,21 @@ class PenilaianSkp extends Model
     public function rencanaTindakLanjut(): HasMany
     {
         return $this->hasMany(RencanaTindakLanjut::class);
+    }
+
+    public function sasaranKerja(): BelongsTo
+    {
+        return $this->belongsTo(SasaranKerja::class, 'sasaran_kerja_id');
+    }
+
+    // Scopes
+    public function scopeForPegawai(Builder $query, int $pegawaiId): Builder
+    {
+        return $query->where('pegawai_id', $pegawaiId);
+    }
+
+    public function scopeForPeriode(Builder $query, int $periodeId): Builder
+    {
+        return $query->where('periode_id', $periodeId);
     }
 }

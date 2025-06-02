@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class SasaranKerja extends Model
 {
@@ -23,6 +24,7 @@ class SasaranKerja extends Model
         'target_kualitas',
         'target_waktu',
         'target_biaya',
+        'bobot_persen',
         'status',
         'catatan',
     ];
@@ -31,6 +33,7 @@ class SasaranKerja extends Model
         'target_kualitas' => 'decimal:2',
         'target_waktu' => 'date',
         'target_biaya' => 'decimal:2',
+        'bobot_persen' => 'decimal:2',
     ];
 
     // Relationships
@@ -50,8 +53,18 @@ class SasaranKerja extends Model
     }
 
     // Scopes
-    public function scopeByStatus($query, $status)
+    public function scopeByStatus(Builder $query, $status): Builder
     {
         return $query->where('status', $status);
+    }
+
+    public function scopeForPegawai(Builder $query, int $pegawaiId): Builder
+    {
+        return $query->where('pegawai_id', $pegawaiId);
+    }
+
+    public function scopeForPeriode(Builder $query, int $periodeId): Builder
+    {
+        return $query->where('periode_id', $periodeId);
     }
 }

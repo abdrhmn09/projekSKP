@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -24,6 +23,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uraian Sasaran</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bobot (%)</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -41,6 +41,9 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {{ \Carbon\Carbon::parse($s->target_waktu)->format('d/m/Y') }}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ $s->bobot_persen }}%
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                 {{ $s->status == 'approved' ? 'bg-green-100 text-green-800' : 
@@ -53,7 +56,7 @@
                             @if($s->status == 'draft' || $s->status == 'rejected')
                                 <a href="{{ route('pegawai.sasaran.edit', $s->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                             @endif
-                            <a href="#" class="text-blue-600 hover:text-blue-900">Detail</a>
+                            <a href="{{ route('pegawai.sasaran.show', $s->id) }}" class="text-blue-600 hover:text-blue-900">Detail</a>
                         </td>
                     </tr>
                     @endforeach

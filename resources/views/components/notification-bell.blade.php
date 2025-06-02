@@ -1,4 +1,3 @@
-
 <div class="relative">
     <button id="notification-btn" class="text-white hover:text-gray-300 p-2 relative">
         <i class="fas fa-bell text-xl"></i>
@@ -129,10 +128,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
         .then(data => {
-            notificationBadge.classList.add('hidden');
-            loadNotifications();
+            if (data.success) { // Assuming your backend returns {success: true}
+                notificationBadge.classList.add('hidden');
+                notificationBadge.textContent = '0';
+                notificationList.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500">Tidak ada notifikasi baru</div>';
+                // Do not call loadNotifications() here immediately.
+                // Let the setInterval or next manual open handle refresh.
+            }
+        })
+        .catch(error => {
+            console.error('Error marking notifications as read:', error);
+            // Optionally, inform the user that an error occurred
+            notificationList.innerHTML = '<div class="px-4 py-2 text-sm text-red-500">Gagal menandai notifikasi.</div>';
         });
     });
 

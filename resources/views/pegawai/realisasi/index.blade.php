@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -26,33 +25,51 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kuantitas</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kualitas</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bukti Dukung</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($realisasi as $r)
+                    @forelse($realisasi as $r)
                     <tr>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900 max-w-xs truncate">{{ $r->sasaranKerja->uraian_sasaran }}</div>
+                            <div class="text-sm text-gray-900 max-w-xs truncate" title="{{ $r->sasaranKerja->uraian_sasaran ?? 'N/A' }}">{{ $r->sasaranKerja->uraian_sasaran ?? 'N/A' }}</div>
                         </td>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900 max-w-xs truncate">{{ $r->uraian_realisasi }}</div>
+                            <div class="text-sm text-gray-900 max-w-xs truncate" title="{{ $r->uraian_realisasi }}">{{ $r->uraian_realisasi }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $r->realisasi_kuantitas }} / {{ $r->sasaranKerja->target_kuantitas }}
+                            {{ $r->realisasi_kuantitas }} / {{ $r->sasaranKerja->target_kuantitas ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $r->realisasi_kualitas }}% / {{ $r->sasaranKerja->target_kualitas }}%
+                            {{ $r->realisasi_kualitas }}% / {{ $r->sasaranKerja->target_kualitas ?? 'N/A' }}%
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ \Carbon\Carbon::parse($r->realisasi_waktu)->format('d/m/Y') }}
+                            {{ $r->realisasi_waktu ? \Carbon\Carbon::parse($r->realisasi_waktu)->format('d/m/Y') : '-' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            @if($r->bukti_dukung)
+                                <a href="{{ route('pegawai.realisasi.bukti_dukung', basename($r->bukti_dukung)) }}" target="_blank" class="text-blue-600 hover:text-blue-800 underline"><i class="fas fa-paperclip mr-1"></i>Lihat</a>
+                            @else
+                                -
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                            <a href="{{ route('pegawai.realisasi.edit', $r->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-edit mr-1"></i>Edit</a>
+                            <form action="{{ route('pegawai.realisasi.destroy', $r->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Anda yakin ingin menghapus realisasi ini beserta bukti dukungnya?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900"><i class="fas fa-trash mr-1"></i>Hapus</button>
+                            </form>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                            Belum ada data realisasi kerja.
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

@@ -35,24 +35,30 @@ Route::middleware(['auth', 'can:is-admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/pegawai', [AdminController::class, 'pegawaiIndex'])->name('pegawai');
     Route::get('/pegawai/create', [AdminController::class, 'pegawaiCreate'])->name('pegawai.create');
     Route::post('/pegawai', [AdminController::class, 'pegawaiStore'])->name('pegawai.store');
-    Route::get('/pegawai/{id}/edit', [AdminController::class, 'pegawaiEdit'])->name('pegawai.edit');
-    Route::put('/pegawai/{id}', [AdminController::class, 'pegawaiUpdate'])->name('pegawai.update');
-    Route::delete('/pegawai/{id}', [AdminController::class, 'pegawaiDestroy'])->name('pegawai.destroy');
+    Route::get('/pegawai/{pegawai}/edit', [AdminController::class, 'pegawaiEdit'])->name('pegawai.edit');
+    Route::put('/pegawai/{pegawai}', [AdminController::class, 'pegawaiUpdate'])->name('pegawai.update');
+    Route::delete('/pegawai/{pegawai}', [AdminController::class, 'pegawaiDestroy'])->name('pegawai.destroy');
 
     // Periode Management
     Route::get('/periode', [AdminController::class, 'periodeIndex'])->name('periode');
     Route::get('/periode/create', [AdminController::class, 'periodeCreate'])->name('periode.create');
     Route::post('/periode', [AdminController::class, 'periodeStore'])->name('periode.store');
+    Route::get('/periode/{periode}/edit', [AdminController::class, 'periodeEdit'])->name('periode.edit');
+    Route::put('/periode/{periode}', [AdminController::class, 'periodeUpdate'])->name('periode.update');
+    Route::delete('/periode/{periode}', [AdminController::class, 'periodeDestroy'])->name('periode.destroy');
     Route::put('/periode/{id}/activate', [AdminController::class, 'periodeActivate'])->name('periode.activate');
 
     // Jabatan Management
     Route::get('/jabatan', [AdminController::class, 'jabatanIndex'])->name('jabatan');
     Route::get('/jabatan/create', [AdminController::class, 'jabatanCreate'])->name('jabatan.create');
     Route::post('/jabatan', [AdminController::class, 'jabatanStore'])->name('jabatan.store');
+    Route::get('/jabatan/{jabatan}/edit', [AdminController::class, 'jabatanEdit'])->name('jabatan.edit');
+    Route::put('/jabatan/{jabatan}', [AdminController::class, 'jabatanUpdate'])->name('jabatan.update');
+    Route::delete('/jabatan/{jabatan}', [AdminController::class, 'jabatanDestroy'])->name('jabatan.destroy');
 
     // Reports
     Route::get('/laporan', [AdminController::class, 'laporan'])->name('laporan');
-    Route::get('/laporan/export', [ExportController::class, 'exportLaporan'])->name('laporan.export');
+    Route::get('/laporan/export', [AdminController::class, 'exportLaporan'])->name('laporan.export');
 
     // Additional admin routes
     // Sebaiknya hapus resource controller ini jika sudah didefinisikan secara individual di atas untuk menghindari duplikasi
@@ -85,13 +91,18 @@ Route::middleware(['auth', 'can:is-pegawai'])->prefix('pegawai')->name('pegawai.
     Route::get('/sasaran', [PegawaiController::class, 'sasaranIndex'])->name('sasaran');
     Route::get('/sasaran/create', [PegawaiController::class, 'sasaranCreate'])->name('sasaran.create');
     Route::post('/sasaran', [PegawaiController::class, 'sasaranStore'])->name('sasaran.store');
-    Route::get('/sasaran/{id}/edit', [PegawaiController::class, 'sasaranEdit'])->name('sasaran.edit');
-    Route::put('/sasaran/{id}', [PegawaiController::class, 'sasaranUpdate'])->name('sasaran.update');
+    Route::get('/sasaran/{sasaran}/edit', [PegawaiController::class, 'sasaranEdit'])->name('sasaran.edit');
+    Route::put('/sasaran/{sasaran}', [PegawaiController::class, 'sasaranUpdate'])->name('sasaran.update');
+    Route::get('/sasaran/{sasaran}', [PegawaiController::class, 'sasaranShow'])->name('sasaran.show');
 
     // Realisasi Kerja
     Route::get('/realisasi', [PegawaiController::class, 'realisasiIndex'])->name('realisasi');
     Route::get('/realisasi/create', [PegawaiController::class, 'realisasiCreate'])->name('realisasi.create');
     Route::post('/realisasi', [PegawaiController::class, 'realisasiStore'])->name('realisasi.store');
+    Route::get('/realisasi/{realisasi}/edit', [PegawaiController::class, 'realisasiEdit'])->name('realisasi.edit');
+    Route::put('/realisasi/{realisasi}', [PegawaiController::class, 'realisasiUpdate'])->name('realisasi.update');
+    Route::delete('/realisasi/{realisasi}', [PegawaiController::class, 'realisasiDestroy'])->name('realisasi.destroy');
+    Route::get('/realisasi/bukti-dukung/{filename}', [PegawaiController::class, 'showBuktiDukungRealisasi'])->name('realisasi.bukti_dukung');
 
     // Penilaian
     Route::get('/penilaian', [PegawaiController::class, 'penilaian'])->name('penilaian');

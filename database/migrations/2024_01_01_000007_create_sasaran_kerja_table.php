@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -20,6 +19,7 @@ return new class extends Migration
             $table->decimal('target_kualitas', 5, 2);
             $table->date('target_waktu');
             $table->decimal('target_biaya', 15, 2)->nullable();
+            $table->decimal('bobot_persen', 5, 2);
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
             $table->text('catatan')->nullable();
             $table->timestamps();
