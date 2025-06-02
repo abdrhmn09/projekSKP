@@ -19,6 +19,7 @@ class PenilaianSkp extends Model
         'periode_id',
         'sasaran_kerja_id',
         'nilai_rata_rata_realisasi',
+        'nilai_perilaku',
         'detail_penilaian',
         'nilai_akhir',
         'kategori_nilai',
@@ -31,6 +32,7 @@ class PenilaianSkp extends Model
 
     protected $casts = [
         'nilai_rata_rata_realisasi' => 'decimal:2',
+        'nilai_perilaku' => 'decimal:2',
         'detail_penilaian' => 'array',
         'nilai_akhir' => 'decimal:2',
         'tanggal_penilaian' => 'datetime',

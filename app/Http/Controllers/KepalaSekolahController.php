@@ -231,15 +231,15 @@ class KepalaSekolahController extends Controller
 
     public function penilaianSkpCreate($id)
     {
-        $sasaranKerja = SasaranKerja::with(['pegawai.user', 'periode', 'realisasiKerja', 'penilaianSkp'])
+        $sasaranKerja = SasaranKerja::with(['pegawai.user', 'periode', 'realisasiKerja', 'penilaianSkp.penilaianPerilaku'])
             ->findOrFail($id);
         
-        // Cek apakah sudah ada penilaian final
+        $isFinal = false;
         if ($sasaranKerja->penilaianSkp && $sasaranKerja->penilaianSkp->status == 'final') {
-             return redirect()->route('kepala.penilaian-skp.index')->with('warning', 'SKP ini sudah dinilai final.');
+            $isFinal = true;
         }
 
-        return view('kepala.penilaian-skp.create', compact('sasaranKerja'));
+        return view('kepala.penilaian-skp.create', compact('sasaranKerja', 'isFinal'));
     }
 
     public function penilaianSkpStore(Request $request, $id)
@@ -271,16 +271,16 @@ class KepalaSekolahController extends Controller
             $totalNilaiRealisasiDinilai = 0;
             $jumlahAspekDinilai = 0;
 
-            // Kuantitas dan Kualitas wajib ada
-            if(isset($detailPenilaianInput['kuantitas']['realisasi_dinilai'])){
+            // Kuantitas dan Kualitas wajib ada (dan harus numerik)
+            if(isset($detailPenilaianInput['kuantitas']['realisasi_dinilai']) && is_numeric($detailPenilaianInput['kuantitas']['realisasi_dinilai'])){
                 $totalNilaiRealisasiDinilai += (float)$detailPenilaianInput['kuantitas']['realisasi_dinilai'];
                 $jumlahAspekDinilai++;
             }
-            if(isset($detailPenilaianInput['kualitas']['realisasi_dinilai'])){
+            if(isset($detailPenilaianInput['kualitas']['realisasi_dinilai']) && is_numeric($detailPenilaianInput['kualitas']['realisasi_dinilai'])){
                 $totalNilaiRealisasiDinilai += (float)$detailPenilaianInput['kualitas']['realisasi_dinilai'];
                 $jumlahAspekDinilai++;
             }
-            // Waktu dan Biaya opsional (jika ada inputnya)
+            // Waktu dan Biaya opsional (jika ada inputnya dan numerik)
             if(isset($detailPenilaianInput['waktu']['realisasi_dinilai']) && is_numeric($detailPenilaianInput['waktu']['realisasi_dinilai'])){
                 $totalNilaiRealisasiDinilai += (float)$detailPenilaianInput['waktu']['realisasi_dinilai'];
                 $jumlahAspekDinilai++;
@@ -299,41 +299,49 @@ class KepalaSekolahController extends Controller
                     'periode_id' => $periodeAktif->id,
                 ],
                 [
-                    'detail_penilaian' => $detailPenilaianInput, // Simpan semua input nilai aspek
+                    'detail_penilaian' => $detailPenilaianInput,
                     'nilai_rata_rata_realisasi' => round($rataRataRealisasi, 2),
                     'catatan_kepala_sekolah' => $request->catatan_kepala_sekolah,
                     'feedback_perilaku' => $request->feedback_perilaku,
                     'status' => $request->status_penilaian,
-                    'penilai_id' => auth()->id(), // Simpan ID kepala sekolah yang menilai
+                    'penilai_id' => auth()->id(),
                     'tanggal_penilaian' => now(),
                 ]
             );
 
             // Simpan Penilaian Perilaku
             if ($request->has('penilaian_perilaku')) {
-                // Hapus penilaian perilaku lama jika ada untuk menghindari duplikasi
                 $penilaian->penilaianPerilaku()->delete(); 
                 foreach ($request->penilaian_perilaku as $perilaku) {
                     $penilaian->penilaianPerilaku()->create([
                         'aspek_perilaku' => $perilaku['aspek'],
                         'skor' => $perilaku['skor'],
-                        // Anda mungkin perlu menambahkan `periode_id` dan `pegawai_id` di sini 
-                        // tergantung pada struktur tabel `penilaian_perilaku`
                     ]);
                 }
             }
             
-            // Hitung nilai akhir dan kategori jika status final
+            // Hitung dan simpan nilai perilaku, nilai akhir, dan kategori jika status final
             if ($request->status_penilaian === 'final') {
-                // Asumsi bobot: 70% SKP, 30% Perilaku
-                // Anda perlu mengambil rata-rata skor perilaku
-                $rataRataPerilaku = $penilaian->penilaianPerilaku()->avg('skor'); 
-                // Skala perilaku 1-5, konversi ke 0-100 jika perlu, atau sesuaikan perhitungan nilai akhir
-                // Contoh sederhana: $rataRataPerilaku = ($rataRataPerilaku / 5) * 100;
+                $rataRataPerilakuSkorAsli = $penilaian->penilaianPerilaku()->avg('skor') ?? 0;
+                // Konversi rata-rata skor perilaku (1-5) ke skala 0-100
+                // Asumsi skor maksimal adalah 5
+                $nilaiPerilakuSkala100 = ($rataRataPerilakuSkorAsli / 5) * 100;
+                $penilaian->nilai_perilaku = round($nilaiPerilakuSkala100, 2); // Simpan nilai perilaku yang sudah diskalakan
 
-                $nilaiAkhir = ($rataRataRealisasi * 0.7) + ($rataRataPerilaku * 0.3); // Sesuaikan dengan skala skor perilaku
+                // Gunakan nilai_rata_rata_realisasi yang sudah ada di $penilaian atau $rataRataRealisasi langsung
+                $nilaiSKP = $penilaian->nilai_rata_rata_realisasi; // atau round($rataRataRealisasi, 2)
+
+                // Hitung nilai akhir menggunakan komponen yang sudah diskalakan dan disimpan
+                $nilaiAkhir = ($nilaiSKP * 0.7) + ($penilaian->nilai_perilaku * 0.3);
                 $penilaian->nilai_akhir = round($nilaiAkhir, 2);
                 $penilaian->kategori_nilai = $this->tentukanKategoriNilai($nilaiAkhir);
+                
+                $penilaian->save(); // Simpan semua perubahan (nilai_perilaku, nilai_akhir, kategori_nilai)
+            } else {
+                // Jika status draft, mungkin kita ingin set nilai_perilaku, nilai_akhir, kategori_nilai ke null atau 0
+                $penilaian->nilai_perilaku = null;
+                $penilaian->nilai_akhir = null;
+                $penilaian->kategori_nilai = null;
                 $penilaian->save();
             }
 

@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -18,7 +17,7 @@
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Nilai SKP</dt>
-                                <dd class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($p->nilai_skp, 2) }}</dd>
+                                <dd class="mt-1 text-2xl font-bold text-gray-900">{{ number_format($p->nilai_rata_rata_realisasi, 2) }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Nilai Perilaku</dt>

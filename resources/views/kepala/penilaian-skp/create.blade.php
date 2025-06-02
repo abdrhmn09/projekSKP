@@ -87,10 +87,10 @@
                                 <p class="info-text">Realisasi Pegawai: {{ $realisasi->realisasi_kuantitas ?? '-' }} {{ $sasaranKerja->satuan_kuantitas ?? '' }}</p>
                                 
                                 <label for="nilai_kuantitas_ekspektasi" class="mt-2">Ekspektasi Pimpinan:</label>
-                                <textarea name="nilai[kuantitas][ekspektasi]" id="nilai_kuantitas_ekspektasi" rows="2" class="form-textarea mt-1 block w-full">{{ old('nilai.kuantitas.ekspektasi', data_get($penilaianData, 'kuantitas.ekspektasi', '')) }}</textarea>
+                                <textarea name="nilai[kuantitas][ekspektasi]" id="nilai_kuantitas_ekspektasi" rows="2" class="form-textarea mt-1 block w-full" @if($isFinal) disabled @endif>{{ old('nilai.kuantitas.ekspektasi', data_get($penilaianData, 'kuantitas.ekspektasi', '')) }}</textarea>
                                 
                                 <label for="nilai_kuantitas_realisasi_dinilai" class="mt-2">Nilai Realisasi Dinilai (%):</label>
-                                <input type="number" name="nilai[kuantitas][realisasi_dinilai]" id="nilai_kuantitas_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.kuantitas.realisasi_dinilai', data_get($penilaianData, 'kuantitas.realisasi_dinilai', '')) }}">
+                                <input type="number" name="nilai[kuantitas][realisasi_dinilai]" id="nilai_kuantitas_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.kuantitas.realisasi_dinilai', data_get($penilaianData, 'kuantitas.realisasi_dinilai', '')) }}" @if($isFinal) disabled @endif>
                             </div>
 
                             <!-- Penilaian Aspek Kualitas -->
@@ -100,10 +100,10 @@
                                 <p class="info-text">Realisasi Pegawai: {{ $realisasi->realisasi_kualitas ?? '-' }} %</p>
                                 
                                 <label for="nilai_kualitas_ekspektasi" class="mt-2">Ekspektasi Pimpinan:</label>
-                                <textarea name="nilai[kualitas][ekspektasi]" id="nilai_kualitas_ekspektasi" rows="2" class="form-textarea mt-1 block w-full">{{ old('nilai.kualitas.ekspektasi', data_get($penilaianData, 'kualitas.ekspektasi', '')) }}</textarea>
+                                <textarea name="nilai[kualitas][ekspektasi]" id="nilai_kualitas_ekspektasi" rows="2" class="form-textarea mt-1 block w-full" @if($isFinal) disabled @endif>{{ old('nilai.kualitas.ekspektasi', data_get($penilaianData, 'kualitas.ekspektasi', '')) }}</textarea>
                                 
                                 <label for="nilai_kualitas_realisasi_dinilai" class="mt-2">Nilai Realisasi Dinilai (%):</label>
-                                <input type="number" name="nilai[kualitas][realisasi_dinilai]" id="nilai_kualitas_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.kualitas.realisasi_dinilai', data_get($penilaianData, 'kualitas.realisasi_dinilai', '')) }}">
+                                <input type="number" name="nilai[kualitas][realisasi_dinilai]" id="nilai_kualitas_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.kualitas.realisasi_dinilai', data_get($penilaianData, 'kualitas.realisasi_dinilai', '')) }}" @if($isFinal) disabled @endif>
                             </div>
 
                             <!-- Penilaian Aspek Waktu -->
@@ -114,25 +114,25 @@
                                 <p class="info-text">Realisasi Pegawai: {{ $realisasi->realisasi_waktu ? \Carbon\Carbon::parse($realisasi->realisasi_waktu)->translatedFormat('d M Y') : '-' }}</p>
                                 
                                 <label for="nilai_waktu_ekspektasi" class="mt-2">Ekspektasi Pimpinan:</label>
-                                <textarea name="nilai[waktu][ekspektasi]" id="nilai_waktu_ekspektasi" rows="2" class="form-textarea mt-1 block w-full">{{ old('nilai.waktu.ekspektasi', data_get($penilaianData, 'waktu.ekspektasi', '')) }}</textarea>
+                                <textarea name="nilai[waktu][ekspektasi]" id="nilai_waktu_ekspektasi" rows="2" class="form-textarea mt-1 block w-full" @if($isFinal) disabled @endif>{{ old('nilai.waktu.ekspektasi', data_get($penilaianData, 'waktu.ekspektasi', '')) }}</textarea>
                                 
                                 <label for="nilai_waktu_realisasi_dinilai" class="mt-2">Nilai Realisasi Dinilai (%):</label>
-                                <input type="number" name="nilai[waktu][realisasi_dinilai]" id="nilai_waktu_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.waktu.realisasi_dinilai', data_get($penilaianData, 'waktu.realisasi_dinilai', '')) }}">
+                                <input type="number" name="nilai[waktu][realisasi_dinilai]" id="nilai_waktu_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.waktu.realisasi_dinilai', data_get($penilaianData, 'waktu.realisasi_dinilai', '')) }}" @if($isFinal) disabled @endif>
                             </div>
                             @endif
 
                             <!-- Penilaian Aspek Biaya (jika ada) -->
-                            @if($sasaranKerja->target_biaya > 0 || $realisasi->realisasi_biaya > 0)
+                            @if($sasaranKerja->target_biaya > 0 || ($realisasi && $realisasi->realisasi_biaya > 0) )
                             <div class="input-group">
                                 <label for="nilai_biaya_realisasi">Aspek: Biaya</label>
                                 <p class="info-text">Target: Rp {{ number_format($sasaranKerja->target_biaya ?? 0, 0, ',', '.') }}</p>
                                 <p class="info-text">Realisasi Pegawai: Rp {{ number_format($realisasi->realisasi_biaya ?? 0, 0, ',', '.') }}</p>
                                 
                                 <label for="nilai_biaya_ekspektasi" class="mt-2">Ekspektasi Pimpinan:</label>
-                                <textarea name="nilai[biaya][ekspektasi]" id="nilai_biaya_ekspektasi" rows="2" class="form-textarea mt-1 block w-full">{{ old('nilai.biaya.ekspektasi', data_get($penilaianData, 'biaya.ekspektasi', '')) }}</textarea>
+                                <textarea name="nilai[biaya][ekspektasi]" id="nilai_biaya_ekspektasi" rows="2" class="form-textarea mt-1 block w-full" @if($isFinal) disabled @endif>{{ old('nilai.biaya.ekspektasi', data_get($penilaianData, 'biaya.ekspektasi', '')) }}</textarea>
                                 
                                 <label for="nilai_biaya_realisasi_dinilai" class="mt-2">Nilai Realisasi Dinilai (%):</label>
-                                <input type="number" name="nilai[biaya][realisasi_dinilai]" id="nilai_biaya_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.biaya.realisasi_dinilai', data_get($penilaianData, 'biaya.realisasi_dinilai', '')) }}">
+                                <input type="number" name="nilai[biaya][realisasi_dinilai]" id="nilai_biaya_realisasi_dinilai" min="0" max="100" class="form-input mt-1 block w-full" value="{{ old('nilai.biaya.realisasi_dinilai', data_get($penilaianData, 'biaya.realisasi_dinilai', '')) }}" @if($isFinal) disabled @endif>
                             </div>
                             @endif
                         </div>
@@ -152,7 +152,7 @@
 
                     <div class="mb-4">
                         <label for="catatan_kepala_sekolah" class="block text-sm font-medium text-gray-700">Catatan Penilaian Keseluruhan SKP</label>
-                        <textarea id="catatan_kepala_sekolah" name="catatan_kepala_sekolah" rows="3" class="form-textarea mt-1 block w-full">{{ old('catatan_kepala_sekolah', optional($sasaranKerja->penilaianSkp)->catatan_kepala_sekolah ?? '') }}</textarea>
+                        <textarea id="catatan_kepala_sekolah" name="catatan_kepala_sekolah" rows="3" class="form-textarea mt-1 block w-full" @if($isFinal) disabled @endif>{{ old('catatan_kepala_sekolah', optional($sasaranKerja->penilaianSkp)->catatan_kepala_sekolah ?? '') }}</textarea>
                     </div>
                 </div>
 
@@ -176,9 +176,9 @@
                     @foreach($aspekPerilaku as $index => $aspek)
                     <div class="mb-4 p-4 border rounded-md">
                         <label class="block text-sm font-medium text-gray-700">Aspek: {{ $aspek }}</label>
-                        <input type="hidden" name="penilaian_perilaku[{{ $index }}][aspek]" value="{{ $aspek }}">
+                        <input type="hidden" name="penilaian_perilaku[{{ $index }}][aspek]" value="{{ $aspek }}" @if($isFinal) disabled @endif>
                         <select name="penilaian_perilaku[{{ $index }}][skor]"
-                                class="form-select mt-1 block w-full">
+                                class="form-select mt-1 block w-full" @if($isFinal) disabled @endif>
                             <option value="">Pilih Skor</option>
                             @for ($i = 1; $i <= 5; $i++)
                             <option value="{{ $i }}" {{ old('penilaian_perilaku.'.$index.'.skor', optional($penilaianPerilakuData->get($aspek))->skor ?? '' ) == $i ? 'selected' : '' }}>
@@ -198,14 +198,14 @@
                     
                     <div class="mb-4">
                         <label for="feedback_perilaku" class="block text-sm font-medium text-gray-700">Umpan Balik Tambahan Perilaku Kerja</label>
-                        <textarea id="feedback_perilaku" name="feedback_perilaku" rows="3" class="form-textarea mt-1 block w-full">{{ old('feedback_perilaku', optional($sasaranKerja->penilaianSkp)->feedback_perilaku ?? '') }}</textarea>
+                        <textarea id="feedback_perilaku" name="feedback_perilaku" rows="3" class="form-textarea mt-1 block w-full" @if($isFinal) disabled @endif>{{ old('feedback_perilaku', optional($sasaranKerja->penilaianSkp)->feedback_perilaku ?? '') }}</textarea>
                     </div>
                 </div>
             </div>
 
             <div class="mt-6">
                 <label for="status_penilaian" class="block text-sm font-medium text-gray-700">Status Penilaian</label>
-                <select id="status_penilaian" name="status_penilaian" class="form-select mt-1 block w-full">
+                <select id="status_penilaian" name="status_penilaian" class="form-select mt-1 block w-full" @if($isFinal) disabled @endif>
                     <option value="draft" {{ old('status_penilaian', optional($sasaranKerja->penilaianSkp)->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Simpan sebagai Draft</option>
                     <option value="final" {{ old('status_penilaian', optional($sasaranKerja->penilaianSkp)->status ?? '') == 'final' ? 'selected' : '' }}>Simpan sebagai Final</option>
                 </select>
@@ -213,11 +213,13 @@
 
             <div class="mt-8 flex justify-end space-x-3">
                 <a href="{{ route('kepala.penilaian-skp.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Batal
+                    @if($isFinal) Kembali @else Batal @endif
                 </a>
+                @if(!$isFinal)
                 <button type="submit" class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Simpan Penilaian
                 </button>
+                @endif
             </div>
         </form>
     </div>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('sasaran_kerja_id')->nullable()->constrained('sasaran_kerja')->onDelete('cascade');
             $table->json('detail_penilaian')->nullable();
             $table->decimal('nilai_rata_rata_realisasi', 5, 2)->nullable();
+            $table->decimal('nilai_perilaku', 5, 2)->nullable();
             $table->decimal('nilai_akhir', 5, 2)->nullable();
             $table->enum('kategori_nilai', ['Sangat Baik', 'Baik', 'Cukup', 'Kurang', 'Sangat Kurang'])->nullable();
             $table->text('catatan_kepala_sekolah')->nullable();

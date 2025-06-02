@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -37,17 +36,20 @@
                                 {{ $sasaran->target_kuantitas }} {{ $sasaran->satuan_kuantitas }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                @if($sasaran->realisasiKerja->count() > 0)
-                                    {{ $sasaran->realisasiKerja->sum('realisasi_kuantitas') }} {{ $sasaran->satuan_kuantitas }}
+                                @if($sasaran->realisasiKerja)
+                                    {{ $sasaran->realisasiKerja->realisasi_kuantitas }} {{ $sasaran->satuan_kuantitas }}
                                 @else
                                     Belum ada
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php
-                                    $progress = $sasaran->realisasiKerja->count() > 0 
-                                        ? ($sasaran->realisasiKerja->sum('realisasi_kuantitas') / $sasaran->target_kuantitas) * 100 
-                                        : 0;
+                                    $realisasiKuantitas = $sasaran->realisasiKerja ? $sasaran->realisasiKerja->realisasi_kuantitas : 0;
+                                    $targetKuantitas = $sasaran->target_kuantitas ?? 0;
+                                    $progress = 0;
+                                    if ($targetKuantitas > 0) {
+                                        $progress = ($realisasiKuantitas / $targetKuantitas) * 100;
+                                    }
                                     $progress = min(100, $progress);
                                 @endphp
                                 <div class="flex items-center">
